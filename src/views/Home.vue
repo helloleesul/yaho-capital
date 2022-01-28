@@ -23,8 +23,13 @@
     </section>
     <section class="bg-info">
       <b-container>
-        <b-row class="text-center align-items-center">
+        <b-row class="text-center align-items-center justify-content-center">
           <p class="fw-900 text-50 text-white">Section</p>
+          <ul class="d-flex justify-content-between align-items-center w-50 m-0 p-0">
+            <li v-for="item in items" :key="item">
+              <b-btn>{{item.name}}</b-btn>
+            </li>
+          </ul>
         </b-row>
       </b-container>
     </section>
@@ -46,6 +51,16 @@ import Inquiry from '../components/Inquiry.vue'
 export default {
   name: 'Home',
   components: { GoButton, Inquiry },
+  data() {
+    return {
+      items: [
+        {id: 1, name: 'a'},
+        {id: 2, name: 'a'},
+        {id: 3, name: 'a'},
+        {id: 4, name: 'a'},
+      ]
+    }
+  }
 }
 </script>
 

@@ -32,6 +32,10 @@ a {
   color: inherit;
 }
 
+ul, li, ol {
+  list-style: none;
+}
+
 @for $var from 2 through 9 {
   .fw-#{$var}#{"00"} {
     font-weight: #{$var}#{"00"};
