@@ -3,14 +3,14 @@
     <section class="bg-primary">
       <b-container>
         <b-row class="text-center align-items-center">
-          <p class="fw-900 text-50 text-white">Section 1</p>
+          <p class="fw-900 text-50 text-white">Section</p>
         </b-row>
       </b-container>
     </section>
     <section class="bg-secondary">
       <b-container>
         <b-row class="text-center align-items-center">
-          <p class="fw-900 text-50 text-white">Section 2</p>
+          <p class="fw-900 text-50 text-white">Section</p>
         </b-row>
       </b-container>
     </section>
@@ -24,14 +24,14 @@
     <section class="bg-info">
       <b-container>
         <b-row class="text-center align-items-center">
-          <p class="fw-900 text-50 text-white">Section 4</p>
+          <p class="fw-900 text-50 text-white">Section</p>
         </b-row>
       </b-container>
     </section>
     <section class="bg-dark">
       <b-container>
         <b-row class="text-center align-items-center">
-          <p class="fw-900 text-50 text-white">Section 5</p>
+          <p class="fw-900 text-50 text-white">Section</p>
         </b-row>
       </b-container>
     </section>

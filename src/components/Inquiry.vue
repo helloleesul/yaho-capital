@@ -61,7 +61,10 @@
                     v-model="check"
                     id="check-input"
                     >
-                        <b-form-checkbox value="개인정보동의">개인정보동의</b-form-checkbox>
+                        <b-form-checkbox value="개인정보동의">
+                            개인정보동의
+                            <b-btn variant="link">자세히보기</b-btn>
+                        </b-form-checkbox>
                         <b-form-invalid-feedback id="check-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                     </b-form-checkbox-group>
             </validation-provider>
