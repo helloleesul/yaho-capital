@@ -8,7 +8,7 @@
   >
     <a
       class="go-button rounded-circle bg-warning text-white d-flex justify-content-center align-items-center"
-      href="#inquiry" v-smooth-scroll="{ duration: 200, offset: -300 }"
+      href="#inquiry" v-smooth-scroll="{ duration: 200, offset: -200 }"
     >
         상담신청
     </a>

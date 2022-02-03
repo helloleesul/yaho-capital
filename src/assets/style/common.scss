@@ -1,147 +1,31 @@
-@import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+@import './font.scss';
 
-@use "sass:math";
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
 
-@for $var from 2 through 9 {
-  .fw-#{$var}#{"00"} {
-    font-weight: #{$var}#{"00"};
+.row, .col {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  padding-top: 4rem;
+}
+
+main, footer {
+  .container {
+    padding: 8rem 0;
   }
 }
 
-body,
-.text-noto {
-  font-family: "NanumSquare", sans-serif;
-}
-
-.text-ms {
-  font-family: "NanumSquare", sans-serif;
-}
-
-.text-left {
-  text-align: left;
-}
-.text-center {
-  text-align: center;
-}
-.text-right {
-  text-align: right;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-ul, li, ol {
-  list-style: none;
-}
-
-@for $var from 2 through 9 {
-  .fw-#{$var}#{"00"} {
-    font-weight: #{$var}#{"00"};
+header {
+  z-index: 9999;
+  .row {
+      height: 4rem;
   }
-}
-
-$font-size: (
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  20,
-  21,
-  22,
-  24,
-  25,
-  26,
-  27,
-  28,
-  30,
-  31,
-  32,
-  34,
-  36,
-  40,
-  45,
-  48,
-  50,
-  54,
-  61,
-  65,
-  75,
-  80,
-  90,
-  96,
-  115
-);
-
-@media print {
-  @each $var in $font-size {
-    .text-pr-#{$var} {
-      font-size: #{$var}rem;
-    }
-  }
-}
-
-@each $var in $font-size {
-  .text-#{$var} {
-    font-size: #{$var}px;
-  }
-  .btn.text-#{$var} {
-    font-size: #{$var}px !important;
-    * {
-      font-size: #{$var}px !important;
-    }
-  }
-}
-
-@media screen and (min-width: 768px) {
-  @each $var in $font-size {
-    .text-md-#{$var} {
-      font-size: #{$var}px;
-    }
-    .btn.text-md-#{$var} {
-      font-size: #{$var}px !important;
-      * {
-        font-size: #{$var}px !important;
-      }
-    }
-  }
-}
-@media screen and (min-width: 1025px) {
-  @each $var in $font-size {
-    .text-lg-#{$var} {
-      font-size: #{$var}px;
-    }
-    .btn.text-lg-#{$var} {
-      font-size: #{$var}px !important;
-      * {
-        font-size: #{$var}px !important;
-      }
-    }
-  }
-}
-
-$line-heights: (135, 160, 165, 170, 180, 200, 225);
-
-@each $var in $line-heights {
-  .lh-#{$var} {
-    line-height: #{($var, 100)};
-  }
-}
-.lh-0 {
-  line-height: 0;
-}
-
-.break-keep {
-  word-break: keep-all !important;
-}
-.break-initial {
-  word-break: initial !important;
-  word-wrap: break-word;
-}
-.underline {
-  text-decoration: underline !important;
 }

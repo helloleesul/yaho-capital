@@ -1,12 +1,12 @@
 <template>
-  <div id="app">
-    <router-view/>
-  </div>
+    <main>
+        <h1>계정관리</h1>
+    </main>
 </template>
 
 <script>
 export default {
-  name: 'App',
+
 }
 </script>
 
