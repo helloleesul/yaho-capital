@@ -1,23 +1,6 @@
 <template>
     <main>
         <b-container>
-            <!-- 버튼 헤더 영역 -->
-            <!-- <b-row class="mb-3 align-items-center">
-                <b-col>
-                    <b-btn
-                    @click="$router.go(-1)"
-                    ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
-                </b-col>
-                <b-col class="text-right">
-                    상태변경: 
-                    <b-form-select
-                    v-model="items.status"
-                    :options="statusOptions"
-                    ></b-form-select>
-                </b-col>
-            </b-row> -->
-
-            <!-- 상세 영역 -->
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
                 <b-col :style="{marginRight:'3rem'}">
@@ -28,10 +11,7 @@
                             ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
                         </b-col>
                     </b-row>
-                    <b-card 
-                        no-body
-                        v-model="items"
-                    >
+                    <b-card no-body v-model="items">
                         <template #header>
                             <h5 class="mb-0 d-inline">{{ items.name }}</h5>
                         </template>
