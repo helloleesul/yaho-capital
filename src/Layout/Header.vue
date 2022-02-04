@@ -11,9 +11,12 @@
                         <b-row class="align-items-center justify-content-between">
                             <b-col>
                                 <b-nav class="justify-content-center">
-                                    <b-nav-item to="/admin/inquiryList">상담리스트</b-nav-item>
-                                    <b-nav-item to="/admin/userList">계정관리</b-nav-item>
-                                    <b-nav-item to="/admin/myAccount">내 정보수정</b-nav-item>
+                                    <b-nav-item to="/admin/inquiryList"
+                                    :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담리스트</b-nav-item>
+                                    <b-nav-item to="/admin/userList"
+                                    :class="path.includes('/admin/userList') ? 'active' : ''">계정관리</b-nav-item>
+                                    <b-nav-item to="/admin/myAccount"
+                                    :class="path.includes('/admin/myAccount') ? 'active' : ''">내 정보수정</b-nav-item>
                                 </b-nav>
                             </b-col>
                             <b-col>
@@ -61,25 +64,35 @@ export default {
         return {
             user: true
         }
+    },
+    computed: {
+        path() {
+        return this.$route.path;
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.nav-link {
-    color: #fff;
-    &:hover, &:active {
-        color: #fff;
-    }
-    &.router-link-exact-active {
+.nav-item {
+    &.active {
         color: #fff;
         font-weight: 900;
         &::after {
             content:'';
-            width: 100%;
+            width: 80%;
             height: 2px;
             display: block;
             background: #fff;
+            position: relative;
+            left: 50%; top: -5px;
+            transform: translateX(-50%);
+        }
+    }
+    .nav-link {
+        color: #fff;
+        &:hover, &:active {
+            color: #fff;
         }
     }
 }

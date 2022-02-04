@@ -24,8 +24,12 @@ main, footer {
 }
 
 header {
-  z-index: 9999;
+  z-index: 100;
   .row {
       height: 4rem;
   }
+}
+
+.statusSelected input[type="radio"] {
+  display: none;
 }
