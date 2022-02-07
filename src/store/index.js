@@ -5,27 +5,22 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loaded: false,
     token: null,
-    user: null,
   },
   mutations: {
-    set(s, [k, v]) {
-      s[k] = v;
-    },
+    setToken(state, _token){
+      state.token = _token;
+    }
   },
   gatters: {
-    token(s) {
-      return s.token;
-    },
-    user(s) {
-      return s.user;
-    },
-    loaded(s) {
-      return s.loaded;
-    },
+    isLogin(state){
+      return state.token == null ? false : true ;
+    }
   },
   actions: {
+    setToken:({commit} , _token) => {
+        commit('setToken' , _token);
+    }
   },
   modules: {
   }

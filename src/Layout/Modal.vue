@@ -34,12 +34,12 @@
 
 <script>
 export default {
+    name: 'Modal',
     props: {
-        currentItem: null
+        currentItem: null,
     }
 }
 </script>
 
-<style>
-
+<style lang="scss">
 </style>

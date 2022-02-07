@@ -23,7 +23,7 @@
             <b-table caption-top :filter="filter" class="text-center" head-row-variant="light" no-border-collapse 
             :items="items" :fields="fields">
                 <template #table-caption>This is a table caption at the top.</template>
-                <template #cell(contents)="row">
+                <!-- <template #cell(contents)="row">
                     <b-button size="sm" @click="row.toggleDetails" class="mr-2">
                     {{ row.detailsShowing ? '닫기' : '보기'}}
                     </b-button>
@@ -35,7 +35,7 @@
                             <b-col>{{ row.item.age }}</b-col>
                         </b-row>
                     </b-card>
-                </template>
+                </template> -->
 
                 <template #cell(details)="row">
                     <b-button size="sm" class="mr-2"
@@ -86,11 +86,11 @@ export default {
                 sortable: false,
                 filterByFormatted: true
             },
-            {
-                key: 'contents',
-                label: '신청내용',
-                sortable: false,
-            },
+            // {
+            //     key: 'contents',
+            //     label: '신청내용',
+            //     sortable: false,
+            // },
             {
                 key: 'details',
                 label: '상세',

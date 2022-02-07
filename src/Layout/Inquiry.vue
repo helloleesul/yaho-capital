@@ -20,14 +20,14 @@
             </validation-provider>
             <validation-provider
             name="연락처"
-            :rules="{ required: true, integer: true }"
+            :rules="{ required: true, integer: true, min: 9 }"
             v-slot="validationContext"
             >
                 <b-form-group id="tel-input-group" label="연락처" label-for="tel-input">
                     <b-form-input
                     id="tel-input"
                     name="tel-input"
-                    v-model="input.tel"
+                    v-model="input.phone"
                     type="tel"
                     placeholder="-없이 입력하세요."
                     maxlength="11"
@@ -44,7 +44,7 @@
                 <b-form-group id="contents-input-group" label="상담내용" label-for="contents-input">
                     <b-form-textarea
                     id="contents-input"
-                    v-model="input.contents" 
+                    v-model="input.content" 
                     placeholder="상담내용을 간단히 입력하세요."
                     rows="3"
                     max-rows="6"
@@ -80,22 +80,20 @@ export default {
     data() {
         return {
             input:{
-                name: '',
-                tel: null,
-                contents: '',
+                name: null,
+                phone: null,
+                content: null,
             },
             check: [],
         }
     },
     methods: {
         async submit(){
-            console.log(this.input)
-            
-            // const { data } = await this.$axios.post("/token", this.input);
-            // console.log(data)
-            // if (data.data.code === '0000') {
-            //     this.sheet2 = true;
-            // } 
+            const { data } = await this.$axios.post("http://localhost:8100/api/v1/inquiry", this.input);
+            console.log(data)
+            if (data.data.code === '0000') {
+                console.log(this.input)
+            } 
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;

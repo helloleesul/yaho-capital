@@ -17,81 +17,95 @@
                         </b-form-group>
                     </validation-provider>
                     <validation-provider
-                    name="현재 비밀번호"
-                    :rules="{ required: true }"
+                    name="이름"
+                    :rules="{ required: false }"
+                    >
+                        <b-form-group id="name-input-group" label="이름" label-for="name-input">
+                            <b-form-input
+                            disabled
+                            id="name-input"
+                            name="name-input"
+                            v-model="user.name"
+                            ></b-form-input>
+                        </b-form-group>
+                    </validation-provider>
+
+                    <!-- 비밀번호 변경 -->
+                    <b-btn class="w-100 my-3" @click="changePwdShow = !changePwdShow">비밀번호 변경</b-btn>
+                    <ChangePwd v-if="changePwdShow" />
+
+                    <validation-provider
+                    name="연락처"
+                    :rules="{ required: true, integer: true, min: 9 }"
                     v-slot="validationContext"
                     >
-                        <b-form-group id="password-input-group" label="현재 비밀번호" label-for="password-input">
+                        <b-form-group id="tel-input-group" label="연락처" label-for="tel-input">
                             <b-form-input
-                            id="password-input"
-                            name="password-input"
-                            v-model="user.password"
-                            type="password"
-                            placeholder="비밀번호를 입력하세요."
+                            id="tel-input"
+                            name="tel-input"
+                            v-model="user.tel"
+                            type="tel"
+                            placeholder="-없이 입력하세요."
+                            maxlength="11"
                             :state="getValidationState(validationContext)"
-                            aria-describedby="password-input-feedback"
+                            aria-describedby="tel-input-feedback"
                             ></b-form-input>
-                            <b-form-invalid-feedback id="password-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                            <b-form-invalid-feedback id="tel-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                         </b-form-group>
                     </validation-provider>
-
                     <validation-provider
-                        :rules="{ required: true }"
-                        name="새 비밀번호"
-                        vid="password"
-                        v-slot="validationContext"
+                    name="이메일"
+                    :rules="{ required: true, email: true }"
+                    v-slot="validationContext"
                     >
-                        <b-form-group id="newPassword-input-group" label="새 비밀번호" label-for="newPassword-input">
-                        <b-form-input
-                            id="newPassword-input"
-                            name="newPassword-input"
-                            type="password"
-                            v-model="user.newPassword"
+                        <b-form-group id="email-input-group" label="이메일" label-for="email-input">
+                            <b-form-input
+                            id="email-input"
+                            name="email-input"
+                            v-model="user.email"
+                            type="email"
+                            placeholder="이메일주소를 입력하세요."
                             :state="getValidationState(validationContext)"
-                            aria-describedby="newPassword-input-feedback"
-                            placeholder="비밀번호를 입력하세요."
-                        ></b-form-input>
-                        <b-form-invalid-feedback id="newPassword-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                            aria-describedby="email-input-feedback"
+                            ></b-form-input>
+                            <b-form-invalid-feedback id="email-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                         </b-form-group>
                     </validation-provider>
 
-                    <validation-provider
-                        :rules="{ required: true, confirmed: 'password' }"
-                        name="새 비밀번호 확인"
-                        v-slot="validationContext"
-                    >
-                        <b-form-group id="newPassword2-input-group" label="새 비밀번호 확인" label-for="newPassword2-input">
-                        <b-form-input
-                            id="newPassword2-input"
-                            name="newPassword2-input"
-                            type="password"
-                            v-model="user.newPassword2"
-                            :state="getValidationState(validationContext)"
-                            aria-describedby="newPassword2-input-feedback"
-                            placeholder="비밀번호를 입력하세요."
-                        ></b-form-input>
-                        <b-form-invalid-feedback id="newPassword2-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                        </b-form-group>
-                    </validation-provider>
-
-                    <b-button type="submit" variant="primary">로그인</b-button>
+                    <b-button type="submit" variant="primary">수정</b-button>
                 </b-form>
             </validation-observer>
+            {{user}}
         </b-container>
     </main>
 </template>
 
 <script>
+import ChangePwd from '../Layout/ChangePwd.vue'
 export default {
     name: 'Login',
+    components: { ChangePwd },
     data() {
         return {
-            user:{},
+            user:{
+                name: '홍길동',
+                serviceId: 'admin'
+            },
+            changePwdShow: false
         }
     },
     methods: {
         async submit(){
             console.log(this.user)
+            this.$bvModal.msgBoxOk('내 정보가 성공적으로 수정되었습니다.', {
+                title: '내 정보수정',
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'success',
+                centered: true,
+                okTitle: '확인',
+                footerClass: 'p-2',
+            })
             
             // const { data } = await this.$axios.post("/token", this.input);
             // console.log(data)
@@ -107,10 +121,4 @@ export default {
 </script>
 
 <style>
-input[type="password"] {
-    font-family: sans-serif;
-}
-input[type="password"]::placeholder {
-    font-family: "NanumSquare";
-}
 </style>

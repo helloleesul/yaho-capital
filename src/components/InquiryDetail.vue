@@ -18,7 +18,6 @@
 
                         <b-list-group flush>
                             <b-list-group-item>
-                                <!-- {{ getPhoneMask(items.tel) }} -->
                                 {{items.tel}}
                             </b-list-group-item>
                         </b-list-group>
@@ -40,6 +39,7 @@
 
                 <!-- 처리기록 상세 -->
                 <b-col>
+                    <!-- 작성버튼 -->
                     <b-row class="mb-3 align-items-center">
                         <b-col>
                             <b-form-radio-group
@@ -58,10 +58,11 @@
                         </b-col>
                     </b-row>
 
+                    <!-- 작성 -->
                     <b-card 
-                        no-body
-                        class="mb-3"
-                        v-if="newHistory"
+                    no-body
+                    class="mb-3"
+                    v-if="newHistory"
                     >
                         <template #header>
                             <b-row class="align-items-center">
@@ -92,46 +93,55 @@
                         </b-card-footer>
                     </b-card>
 
-                   
-                        <b-card v-if="historys && !historys.length"
-                        border-variant="warning"
-                        text-variant="warning"
-                        align="center">
-                            <b-card-text>작성된 기록이 없습니다.</b-card-text>
-                        </b-card>
-                        
-                         <section v-else class="historyWrap">
+                    <!-- 기록 없을 때 -->
+                    <b-card v-if="historys && !historys.length"
+                    border-variant="warning"
+                    text-variant="warning"
+                    align="center">
+                        <b-card-text>작성된 기록이 없습니다.</b-card-text>
+                    </b-card>
+
+                    <!-- 기록 -->
+                    <section v-else class="historyWrap">
                         <b-card
-                            no-body
-                            v-model="historys"
-                            class="mb-3"
-                            v-for="(list, i) in historys"
-                            :key="i"
+                        no-body
+                        class="mb-3"
+                        v-for="(list, i) in historys"
+                        :key="list.id"
                         >
                             <template #header>
                                 <b-row class="align-items-center">
                                     <b-col class="col-10">
-                                        제목
+                                        <b-form-input v-if="editHistory" size="sm" v-model="list.title"></b-form-input>
+                                        <span v-else>{{list.title}}</span>
                                     </b-col>
                                     <b-col class="text-right">
-                                        <font-awesome-icon icon="user" /> admin
+                                        <font-awesome-icon icon="user" /> {{list.confirmUser}}
                                     </b-col>
                                 </b-row>
                             </template>
 
                             <b-card-body>
-                                <b-card-sub-title class="mb-2">처리기록 내용</b-card-sub-title>
-                                <b-card-text>
-                                    Some quick example text to build on the card title and make up the bulk of the card'
-                                </b-card-text>
+                                <b-form-textarea v-if="editHistory"
+                                size="sm"
+                                v-model="list.contents"
+                                rows="3"
+                                max-rows="6"
+                                ></b-form-textarea>
+                                <div v-else>
+                                    <b-card-sub-title class="mb-2">처리기록 내용</b-card-sub-title>
+                                    <b-card-text>{{list.contents}}</b-card-text>
+                                </div>
                             </b-card-body>
 
                             <b-card-footer>
                                 <b-row class="align-items-center">
                                     <b-col>작성일시: 2022-01-01 12:00</b-col>
                                     <b-col class="text-right">
-                                        <b-btn size="sm" class="mx-2">수정</b-btn>
-                                        <b-btn size="sm" variant="danger">삭제</b-btn>
+                                        <b-btn size="sm" class="mx-2" @click="historyEdit(i)">
+                                            {{editHistory ? '저장' : '수정'}}
+                                        </b-btn>
+                                        <b-btn size="sm" variant="danger" @click="historyDel(i)">삭제</b-btn>
                                     </b-col>
                                 </b-row>
                             </b-card-footer>
@@ -149,71 +159,69 @@ export default {
       return {
         items: {id: 1, name: '홍길동', tel: '01012345678', status: '처리중', confirmUser: 'admin'},
         historys: [
-            {confirmUser: 'admin', text:'제목'},
-            {confirmUser: 'admin', text:'제목'},
-            {confirmUser: 'admin', text:'제목'},
+            {confirmUser: 'admin', title:'제목1', contents: '내용1'},
+            {confirmUser: 'admin', title:'제목2', contents: '내용2'},
+            {confirmUser: 'admin', title:'제목3', contents: '내용3'},
         ],
         statusOptions: [
           { text: '처리대기', value: '처리대기' },
           { text: '처리중', value: '처리중' },
           { text: '처리완료', value: '처리완료' },
         ],
-        newHistory: false
+        newHistory: false,
+        editHistory: false,
+        // selectHistory: null
       }
     },
     methods: {
         newHistoryToggle() {
             this.newHistory = !this.newHistory
         },
-        getPhoneMask(val) {
-            let res = this.getMask(val)
-            this.items.tel = res
+        historyDel(i) {
+            console.log(i)
+            // this.selectHistory = i;
+            this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
+            title: '처리기록 삭제',
+            size: 'sm',
+            buttonSize: 'sm',
+            okVariant: 'danger',
+            okTitle: '삭제',
+            cancelTitle: '취소',
+            footerClass: 'p-2',
+            centered: true
+            })
         },
-        
-        getMask( phoneNumber ) {
-            if(!phoneNumber) return phoneNumber
-            phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
-        
-            let res = ''
-            if(phoneNumber.length < 3) {
-                res = phoneNumber
-            }
-            else {
-                if(phoneNumber.substr(0, 2) =='02') {
-            
-                    if(phoneNumber.length <= 5) {//02-123-5678
-                        res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 3)
-                    }
-                    else if(phoneNumber.length > 5 && phoneNumber.length <= 9) {//02-123-5678
-                        res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 3) + '-' + phoneNumber.substr(5)
-                    }
-                    else if(phoneNumber.length > 9) {//02-1234-5678
-                        res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 4) + '-' + phoneNumber.substr(6)
-                    }
-            
-                } else {
-                    if(phoneNumber.length < 8) {
-                        res = phoneNumber
-                    }
-                    else if(phoneNumber.length == 8)
-                    {
-                        res = phoneNumber.substr(0, 4) + '-' + phoneNumber.substr(4)
-                    }
-                    else if(phoneNumber.length == 9)
-                    {
-                        res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6)
-                    }
-                    else if(phoneNumber.length == 10)
-                    {
-                        res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6)
-                    }
-                    else if(phoneNumber.length > 10) { //010-1234-5678
-                        res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 4) + '-' + phoneNumber.substr(7)
-                    }
-                }
-            }
-            return res
+        historyEdit(i) {
+            console.log(i)
+            this.editHistory = !this.editHistory;
         }
+    },
+    watch: {
+      'items.status'(newVal, oldval) {
+            console.log(newVal, oldval)
+            const h = this.$createElement
+            // Using HTML string
+            const titleVNode = h('div', { domProps: { innerHTML: '처리상태 변경' } })
+            // More complex structure
+            const messageVNode = h('div', { class: ['foobar'] }, [
+            h('p', { class: ['mb-0'] }, [
+                h('strong', { class: ['fw-900'] }, oldval),
+                '에서 ',
+                h('strong', { class: ['fw-900 text-danger'] }, newVal),
+                '으로 변경되었습니다. ',
+            ]),
+            ])
+            // We must pass the generated VNodes as arrays
+            this.$bvModal.msgBoxOk([messageVNode], {
+            title: [titleVNode],
+            buttonSize: 'sm',
+            centered: true, 
+            size: 'md',
+            okTitle: '확인',
+            okVariant: 'success',
+            footerClass: 'p-2',
+        })
+      }
     },
   }
 </script>

@@ -2,7 +2,7 @@
     <main>
         <b-container class="w-25">
             <validation-observer ref="observer" v-slot="{ handleSubmit }">
-                <b-form @submit.prevent="handleSubmit(submit)">
+                <b-form @submit.prevent="handleSubmit(login)">
                     <validation-provider
                     name="아이디"
                     :rules="{ required: true }"
@@ -12,7 +12,7 @@
                             <b-form-input
                             id="serviceId-input"
                             name="serviceId-input"
-                            v-model="user.serviceId"
+                            v-model="input.serviceId"
                             placeholder="아이디를 입력하세요."
                             :state="getValidationState(validationContext)"
                             aria-describedby="serviceId-input-feedback"
@@ -29,7 +29,7 @@
                             <b-form-input
                             id="password-input"
                             name="password-input"
-                            v-model="user.password"
+                            v-model="input.password"
                             type="password"
                             placeholder="비밀번호를 입력하세요."
                             :state="getValidationState(validationContext)"
@@ -51,18 +51,29 @@ export default {
     name: 'Login',
     data() {
         return {
-            user:{},
+            input:{
+                serviceId: null,
+                password: null,
+            }
         }
     },
     methods: {
-        async submit(){
-            console.log(this.user)
+        async login(){
+            // try {
+            //     const token = await this.adminService.loginAdmin(this.adminObj);
+            //     this.$store.dispatch('setToken', token)
+            // } catch (error) {
+            //     alert('로그인에 실패했습니다.');
+            //     location.reload();
+            // }
             
-            // const { data } = await this.$axios.post("/token", this.input);
-            // console.log(data)
-            // if (data.data.code === '0000') {
-            //     this.sheet2 = true;
-            // } 
+            const { data } = await this.$axios.post("http://localhost:8100/auth/token", this.input);
+            console.log(data);
+            this.$store.dispatch('setToken', data.data.token)
+            if (data.code === "0000") {
+                console.log(this.input);
+                console.log(this.$store.state.token);
+            } 
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;
