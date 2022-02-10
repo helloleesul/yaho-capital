@@ -6,14 +6,14 @@
                     <b-navbar-brand tag="h1" class="m-0 p-0 fw-900 text-40">yaho</b-navbar-brand>
                 </b-col>
                 <!-- 관리자 경로 -->
-                <b-col v-if="admin" class="col-8 text-20 text-right p-0">
-                    <template v-if="user">
+                <b-col v-if="this.$store.getters.isLogin" class="col-8 text-20 text-right p-0">
+                    <template>
                         <b-row class="align-items-center justify-content-between">
                             <b-col>
                                 <b-nav class="justify-content-center">
                                     <b-nav-item to="/admin/inquiryList"
                                     :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담리스트</b-nav-item>
-                                    <b-nav-item to="/admin/userList"
+                                    <b-nav-item to="/admin/userList" v-if="this.$store.getters.isSuper"
                                     :class="path.includes('/admin/userList') ? 'active' : ''">계정관리</b-nav-item>
                                     <b-nav-item to="/admin/myAccount"
                                     :class="path.includes('/admin/myAccount') ? 'active' : ''">내 정보수정</b-nav-item>
@@ -22,21 +22,13 @@
                             <b-col>
                                 <span class="mx-2">
                                     <font-awesome-icon icon="user" />
-                                    관리자 ID
+                                    {{ this.$store.state.serviceId }}
                                 </span>
-                                <b-btn pill class="text-warning bg-white text-14 border-0">
+                                <b-btn @click="logout()" pill class="text-warning bg-white text-14 border-0">
                                 로그아웃
                                 </b-btn>
                             </b-col>
                         </b-row>
-                    </template>
-                    <template v-else>
-                        <b-col>
-                            <span>
-                                <font-awesome-icon icon="user-lock" />
-                                관리자 페이지
-                            </span>
-                        </b-col>
                     </template>
                 </b-col>
                 <!-- 기본 경로 -->
@@ -67,7 +59,12 @@ export default {
     },
     computed: {
         path() {
-        return this.$route.path;
+            return this.$route.path;
+        },
+    },
+    methods: {
+        logout() {
+            this.$store.dispatch('logout');
         },
     }
 }

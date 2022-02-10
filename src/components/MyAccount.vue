@@ -2,7 +2,7 @@
     <main>
         <b-container class="w-25">
             <validation-observer ref="observer" v-slot="{ handleSubmit }">
-                <b-form @submit.prevent="handleSubmit(submit)">
+                <b-form @submit.prevent="handleSubmit(updateMe)">
                     <validation-provider
                     name="아이디"
                     :rules="{ required: false }"
@@ -43,7 +43,7 @@
                             <b-form-input
                             id="tel-input"
                             name="tel-input"
-                            v-model="user.tel"
+                            v-model="user.phone"
                             type="tel"
                             placeholder="-없이 입력하세요."
                             maxlength="11"
@@ -88,31 +88,38 @@ export default {
     data() {
         return {
             user:{
-                name: '홍길동',
-                serviceId: 'admin'
             },
-            changePwdShow: false
+            changePwdShow: false,
         }
     },
+    mounted() {
+        this.getMe();
+    },
     methods: {
-        async submit(){
-            console.log(this.user)
-            this.$bvModal.msgBoxOk('내 정보가 성공적으로 수정되었습니다.', {
-                title: '내 정보수정',
-                size: 'sm',
-                buttonSize: 'sm',
-                okVariant: 'success',
-                centered: true,
-                okTitle: '확인',
-                footerClass: 'p-2',
-            })
-            
-            // const { data } = await this.$axios.post("/token", this.input);
-            // console.log(data)
-            // if (data.data.code === '0000') {
-            //     this.sheet2 = true;
-            // } 
+        async updateMe(){
+            await this.$axios.put("/admin/users/me", {
+                email: this.user.email,
+                phone: this.user.phone,
+            }).then(()=> {
+                this.$bvModal.msgBoxOk('내 정보가 성공적으로 수정되었습니다.', {
+                    title: '내 정보수정',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            });
         },
+
+        async getMe(){
+            const { data } = await this.$axios.get("/admin/users/me");
+            console.log(data);
+            
+            this.user = data.data;
+        },
+
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;
         },

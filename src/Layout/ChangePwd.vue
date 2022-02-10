@@ -31,7 +31,7 @@
                     id="newPassword-input"
                     name="newPassword-input"
                     type="password"
-                    v-model="user.newPassword"
+                    v-model="pwd.new"
                     :state="getValidationState(validationContext)"
                     aria-describedby="newPassword-input-feedback"
                     placeholder="비밀번호를 입력하세요."
@@ -50,7 +50,7 @@
                     id="newPassword2-input"
                     name="newPassword2-input"
                     type="password"
-                    v-model="user.newPassword2"
+                    v-model="pwd.new2"
                     :state="getValidationState(validationContext)"
                     aria-describedby="newPassword2-input-feedback"
                     placeholder="비밀번호를 입력하세요."
@@ -61,7 +61,7 @@
 
             <b-button type="submit" variant="primary">비밀번호 변경</b-button>
             Return value: {{ String(change) }}
-            {{user}}
+            {{user}} {{pwd}}
         </b-form>
   </validation-observer>
 </template>
@@ -72,6 +72,10 @@ export default {
     data() {
         return {
             user:{
+            },
+            pwd: {
+                new: null,
+                new2: null,
             },
             change: false
         }

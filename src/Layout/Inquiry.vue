@@ -20,7 +20,7 @@
             </validation-provider>
             <validation-provider
             name="연락처"
-            :rules="{ required: true, integer: true, min: 9 }"
+            :rules="{ required: true, integer: true, min: 9, max: 11 }"
             v-slot="validationContext"
             >
                 <b-form-group id="tel-input-group" label="연락처" label-for="tel-input">
@@ -65,11 +65,12 @@
                             개인정보동의
                             <b-btn v-b-modal.modal1 variant="link">자세히보기</b-btn>
                         </b-form-checkbox>
-                        <b-form-invalid-feedback id="check-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                        <b-form-invalid-feedback id="check-input-feedback" :class="{'hide': checkHide}">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                     </b-form-checkbox-group>
             </validation-provider>
 
             <b-button type="submit" variant="primary">상담신청</b-button>
+            {{input}}
         </b-form>
     </validation-observer>
 </template>
@@ -85,14 +86,30 @@ export default {
                 content: null,
             },
             check: [],
+            checkHide: false
         }
     },
     methods: {
         async submit(){
-            const { data } = await this.$axios.post("http://localhost:8100/api/v1/inquiry", this.input);
+            const { data } = await this.$axios.post("/api/v1/inquiry", this.input);
             console.log(data)
-            if (data.data.code === '0000') {
-                console.log(this.input)
+            console.log(this.input)
+
+            if (data.code === "0000") {
+                this.$bvModal.msgBoxOk('상담신청이 완료되었습니다. 빠른 시일 내에 연락드리겠습니다.', {
+                    title: '상담신청 완료',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(value => {
+                    console.log(value)
+                    Object.assign(this.$data, this.$options.data());
+                    this.$refs.observer.reset();
+                    this.checkHide = true;
+                })
             } 
         },
         getValidationState({ dirty, validated, valid = null }) {
@@ -102,8 +119,11 @@ export default {
 } 
 </script>
 
-<style>
+<style lang="scss">
 #check-input-feedback {
     display: block !important;
+    &.hide {
+        display: none !important;
+    }
 }
 </style>

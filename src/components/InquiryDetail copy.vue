@@ -1,7 +1,6 @@
 <template>
     <main>
         <b-container>
-            {{item}}
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
                 <b-col :style="{marginRight:'3rem'}">
@@ -12,38 +11,28 @@
                             ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
                         </b-col>
                     </b-row>
-                    <b-card no-body v-model="item">
+                    <b-card no-body v-model="items">
                         <template #header>
-                            <span class="text-muted">이름</span>
-                            <h5 class="mb-0">{{ item.name }}</h5>
+                            <h5 class="mb-0 d-inline">{{ items.name }}</h5>
                         </template>
 
                         <b-list-group flush>
                             <b-list-group-item>
-                                <span class="text-muted">연락처</span>
-                                <b-card-text>
-                                    {{ phoneFomatter(itemPhone) }}
-                                </b-card-text>
+                                {{items.tel}}
                             </b-list-group-item>
                         </b-list-group>
 
                         <b-card-body>
-                            <span class="text-muted">상담신청 내용</span>
-                            <b-card-text>
-                                <span v-if="!item.content" class="text-danger">상담내용이 없습니다.</span>
-                                <span v-else>{{item.content}}</span>
+                            <b-card-sub-title class="mb-2">상담신청 내용</b-card-sub-title>
+                            <b-card-text v-for="i in 2" :key="i">
+                                Some quick example text to build on the card title and make up the bulk of the card's
+                                content. Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, quidem itaque! Optio unde recusandae earum impedit repellendus magni sed laborum doloribus officiis amet, temporibus dolore distinctio numquam iste ullam exercitationem.
                             </b-card-text>
                         </b-card-body>
 
                         <b-card-footer>
-                            <b-card-text>
-                                <span class="text-muted">신청일시</span>
-                                {{ $moment(item.createDate).format('YYYY-MM-DD hh:mm a') }}
-                            </b-card-text>
-                            <b-card-text>
-                                <span class="text-muted">처리자</span>
-                                <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
-                            </b-card-text>
+                            신청일시: 2022-01-01 12:00
+                            <span :style="{float:'right'}">처리자: <font-awesome-icon icon="user" /> admin</span>
                         </b-card-footer>
                     </b-card>
                 </b-col>
@@ -56,7 +45,7 @@
                             <b-form-radio-group
                             class="statusSelected"
                             button-variant="outline-secondary"
-                            v-model="item.status"
+                            v-model="items.status"
                             :options="statusOptions"
                             buttons>
                             </b-form-radio-group>
@@ -168,42 +157,26 @@
 export default {
     data() {
       return {
+        items: {id: 1, name: '홍길동', tel: '01012345678', status: '처리중', confirmUser: 'admin'},
         historys: [
-            // {confirmUser: 'admin', title:'제목1', contents: '내용1'},
-            // {confirmUser: 'admin', title:'제목2', contents: '내용2'},
-            // {confirmUser: 'admin', title:'제목3', contents: '내용3'},
+            {confirmUser: 'admin', title:'제목1', contents: '내용1'},
+            {confirmUser: 'admin', title:'제목2', contents: '내용2'},
+            {confirmUser: 'admin', title:'제목3', contents: '내용3'},
         ],
         statusOptions: [
-            { text: '처리대기', value: 'WAIT' },
-            { text: '처리중', value: 'IMG' },
-            { text: '처리완료', value: 'CHECKED' },
+          { text: '처리대기', value: '처리대기' },
+          { text: '처리중', value: '처리중' },
+          { text: '처리완료', value: '처리완료' },
         ],
         newHistory: false,
         editHistory: false,
-        item: {
-            name: null,
-            phone: null
-        },
-        itemPhone: null,
-        itemStatus: null
+        // selectHistory: null
       }
     },
-    computed: {
-        id() {
-            return this.$route.params.id;
-        },
-    },
-    mounted() {
-        this.getInquiryDetail();
-    },
     methods: {
-        async getInquiryDetail(){
+        async getInquiry(){
             const { data } = await this.$axios.get("/admin/inquiry/"+this.id);
             console.log(data);
-
-            this.item = data.data;
-            this.itemStatus = data.data.status;
-            this.itemPhone = data.data.phone;
         },
         newHistoryToggle() {
             this.newHistory = !this.newHistory
@@ -225,44 +198,34 @@ export default {
         historyEdit(i) {
             console.log(i)
             this.editHistory = !this.editHistory;
-        },
-        phoneFomatter(num) {
-            if (num?.length == 11) {
-                this.itemPhone = num.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
-            } else if (num?.length == 10) {
-                this.itemPhone = num.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-            } else if (num?.length == 9) {
-                this.itemPhone = num.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
-            } 
-            return this.itemPhone;
         }
     },
     watch: {
-        itemStatus(newVal, oldval) {
+      'items.status'(newVal, oldval) {
             console.log(newVal, oldval)
             const h = this.$createElement
             // Using HTML string
             const titleVNode = h('div', { domProps: { innerHTML: '처리상태 변경' } })
             // More complex structure
             const messageVNode = h('div', { class: ['foobar'] }, [
-                h('p', { class: ['mb-0'] }, [
-                    h('strong', { class: ['fw-900'] }, oldval),
-                    '에서 ',
-                    h('strong', { class: ['fw-900 text-danger'] }, newVal),
-                    '으로 변경되었습니다. ',
-                ]),
+            h('p', { class: ['mb-0'] }, [
+                h('strong', { class: ['fw-900'] }, oldval),
+                '에서 ',
+                h('strong', { class: ['fw-900 text-danger'] }, newVal),
+                '으로 변경되었습니다. ',
+            ]),
             ])
             // We must pass the generated VNodes as arrays
             this.$bvModal.msgBoxOk([messageVNode], {
-                title: [titleVNode],
-                buttonSize: 'sm',
-                centered: true, 
-                size: 'md',
-                okTitle: '확인',
-                okVariant: 'success',
-                footerClass: 'p-2',
-            })
-        }
+            title: [titleVNode],
+            buttonSize: 'sm',
+            centered: true, 
+            size: 'md',
+            okTitle: '확인',
+            okVariant: 'success',
+            footerClass: 'p-2',
+        })
+      }
     },
   }
 </script>

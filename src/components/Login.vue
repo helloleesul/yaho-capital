@@ -59,21 +59,19 @@ export default {
     },
     methods: {
         async login(){
-            // try {
-            //     const token = await this.adminService.loginAdmin(this.adminObj);
-            //     this.$store.dispatch('setToken', token)
-            // } catch (error) {
-            //     alert('로그인에 실패했습니다.');
-            //     location.reload();
-            // }
-            
-            const { data } = await this.$axios.post("http://localhost:8100/auth/token", this.input);
+            const { data } = await this.$axios.post("/auth/token", this.input);
             console.log(data);
+            // this.$store.dispatch('setLogin', data.data.token, data.data.serviceId)
             this.$store.dispatch('setToken', data.data.token)
+            this.$store.dispatch('setServiceId', data.data.serviceId)
+            this.$store.dispatch('setRole', data.data.role)
+            
             if (data.code === "0000") {
-                console.log(this.input);
+                // console.log(this.input);
                 console.log(this.$store.state.token);
-            } 
+                // console.log(this.$store.state.serviceId);
+                this.$router.push('/admin/inquiryList');
+            }
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;

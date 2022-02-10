@@ -1,4 +1,5 @@
 @import './font.scss';
+@import './table.scss';
 
 body {
   -ms-overflow-style: none; /* IE and Edge */
@@ -32,4 +33,9 @@ header {
 
 .statusSelected input[type="radio"] {
   display: none;
+}
+
+button.page-link, 
+li.page-item.disabled {
+  font-family: 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif
 }

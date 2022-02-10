@@ -14,6 +14,9 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueSmoothScroll from 'vue2-smooth-scroll'
+import VueMoment from 'vue-moment'
+
+Vue.use(VueMoment);
 
 import {
   ValidationObserver,
@@ -47,9 +50,38 @@ Vue.use(VueSmoothScroll)
 Vue.config.productionTip = false
 
 Vue.prototype.$axios = axios
+axios.defaults.baseURL = 'http://localhost:8100'
 
 new Vue({
   router,
   store,
+  created() {
+    // const userString = localStorage.getItem('token');
+    // const userString2 = localStorage.getItem('serviceId');
+    // if (userString) {
+    //   const userData = JSON.parse(userString);
+    //   const userData2 = JSON.parse(userString2);
+    //   this.$store.dispatch('setLogin', userData, userData2);
+    // }
+    const userString2 = localStorage.getItem('token');
+    if (userString2) {
+      const userData2 = JSON.parse(userString2);
+      this.$store.dispatch('setToken', userData2);
+    } 
+    // else {
+    //   alert('노 토큰');
+    //   this.$store.dispatch('logout');
+    // }
+    const userString3 = localStorage.getItem('serviceId');
+    if (userString3) {
+      const userData3 = JSON.parse(userString3);
+      this.$store.dispatch('setServiceId', userData3);
+    }
+    const userString4 = localStorage.getItem('role');
+    if (userString4) {
+      const userData4 = JSON.parse(userString4);
+      this.$store.dispatch('setRole', userData4);
+    }
+  },
   render: h => h(App)
 }).$mount('#app')
