@@ -87,8 +87,7 @@ export default {
     components: { ChangePwd },
     data() {
         return {
-            user:{
-            },
+            user:{},
             changePwdShow: false,
         }
     },

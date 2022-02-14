@@ -16,7 +16,7 @@ export default new Vuex.Store({
     },
     isSuper(state){
       return state.role === "SUPER" ? true : false ;
-    }
+    },
   },
   mutations: {
     // setLogin(state, _token, _serviceId){

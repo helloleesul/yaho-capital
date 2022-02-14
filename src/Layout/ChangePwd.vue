@@ -10,7 +10,7 @@
                     <b-form-input
                     id="password-input"
                     name="password-input"
-                    v-model="user.password"
+                    v-model="input.originPassword"
                     type="password"
                     placeholder="비밀번호를 입력하세요."
                     :state="getValidationState(validationContext)"
@@ -31,7 +31,7 @@
                     id="newPassword-input"
                     name="newPassword-input"
                     type="password"
-                    v-model="pwd.new"
+                    v-model="input.newPassword"
                     :state="getValidationState(validationContext)"
                     aria-describedby="newPassword-input-feedback"
                     placeholder="비밀번호를 입력하세요."
@@ -50,7 +50,7 @@
                     id="newPassword2-input"
                     name="newPassword2-input"
                     type="password"
-                    v-model="pwd.new2"
+                    v-model="newPasswordCheck"
                     :state="getValidationState(validationContext)"
                     aria-describedby="newPassword2-input-feedback"
                     placeholder="비밀번호를 입력하세요."
@@ -61,7 +61,7 @@
 
             <b-button type="submit" variant="primary">비밀번호 변경</b-button>
             Return value: {{ String(change) }}
-            {{user}} {{pwd}}
+            {{input}}
         </b-form>
   </validation-observer>
 </template>
@@ -71,33 +71,31 @@ export default {
     name: 'ChangePwd',
     data() {
         return {
-            user:{
+            input: {
+                newPassword: null,
+                originPassword: null
             },
-            pwd: {
-                new: null,
-                new2: null,
-            },
+            newPasswordCheck: null,
             change: false
         }
     },
     methods: {
         async changePwd(){
-            console.log(this.user)
-            this.$bvModal.msgBoxOk('비밀번호가 성공적으로 변경되었습니다.', {
-                title: '비밀번호 변경',
-                size: 'sm',
-                buttonSize: 'sm',
-                okVariant: 'success',
-                centered: true,
-                okTitle: '확인',
-                footerClass: 'p-2',
-            })
-            
-            // const { data } = await this.$axios.post("/token", this.input);
-            // console.log(data)
-            // if (data.data.code === '0000') {
-            //     this.sheet2 = true;
-            // } 
+            const { data } = await this.$axios.post("/admin/users/reset-password", this.input);
+            console.log(data)
+            console.log(this.input)
+
+            if (data.code === "0000") {
+                this.$bvModal.msgBoxOk('비밀번호가 성공적으로 변경되었습니다.', {
+                    title: '비밀번호 변경',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            } 
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;

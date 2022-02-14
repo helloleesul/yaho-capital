@@ -62,26 +62,22 @@
                             </b-form-radio-group>
                         </b-col>
                         <b-col class="text-right">
-                            <b-btn @click="newHistoryToggle()">
-                                <font-awesome-icon :icon="newHistory ? 'minus' : 'plus'" />
+                            <b-btn @click="newCommentToggle()">
+                                <font-awesome-icon :icon="newComment ? 'minus' : 'plus'" />
                                 기록 작성
                             </b-btn>
                         </b-col>
                     </b-row>
-
                     <!-- 작성 -->
                     <b-card 
                     no-body
                     class="mb-3"
-                    v-if="newHistory"
+                    v-if="newComment"
                     >
                         <template #header>
                             <b-row class="align-items-center">
-                                <b-col class="col-10">
-                                    <b-form-input size="sm" placeholder="제목을 입력하세요."></b-form-input>
-                                </b-col>
                                 <b-col class="text-right">
-                                    <font-awesome-icon icon="user" /> admin
+                                    <font-awesome-icon icon="user" /> {{ $store.state.serviceId }}
                                 </b-col>
                             </b-row>
                         </template>
@@ -92,20 +88,21 @@
                             placeholder="처리기록 내용을 입력하세요."
                             rows="3"
                             max-rows="6"
+                            v-model="item.comments.content"
                             ></b-form-textarea>
                         </b-card-body>
 
                         <b-card-footer>
                             <b-row class="align-items-center">
                                 <b-col class="text-right">
-                                    <b-btn size="sm">저장</b-btn>
+                                    <b-btn size="sm" @click="addComment()">저장</b-btn>
                                 </b-col>
                             </b-row>
                         </b-card-footer>
                     </b-card>
 
                     <!-- 기록 없을 때 -->
-                    <b-card v-if="historys && !historys.length"
+                    <b-card v-if="!item.comments"
                     border-variant="warning"
                     text-variant="warning"
                     align="center">
@@ -113,46 +110,47 @@
                     </b-card>
 
                     <!-- 기록 -->
-                    <section v-else class="historyWrap">
+                    <section v-else class="commentsWrap">
                         <b-card
                         no-body
                         class="mb-3"
-                        v-for="(list, i) in historys"
+                        v-for="(list, i) in item.comments"
                         :key="list.id"
                         >
                             <template #header>
                                 <b-row class="align-items-center">
-                                    <b-col class="col-10">
-                                        <b-form-input v-if="editHistory" size="sm" v-model="list.title"></b-form-input>
-                                        <span v-else>{{list.title}}</span>
-                                    </b-col>
+                                    {{list.id}}
                                     <b-col class="text-right">
-                                        <font-awesome-icon icon="user" /> {{list.confirmUser}}
+                                        <font-awesome-icon icon="user" /> {{list.user.serviceId}}
                                     </b-col>
                                 </b-row>
                             </template>
 
                             <b-card-body>
-                                <b-form-textarea v-if="editHistory"
-                                size="sm"
-                                v-model="list.contents"
-                                rows="3"
-                                max-rows="6"
-                                ></b-form-textarea>
-                                <div v-else>
+                                <div>
                                     <b-card-sub-title class="mb-2">처리기록 내용</b-card-sub-title>
-                                    <b-card-text>{{list.contents}}</b-card-text>
+                                    <b-form-textarea
+                                    v-if="list.edit"
+                                    size="sm"
+                                    v-model="list.content"
+                                    rows="3"
+                                    max-rows="6"
+                                    ref="editInput"
+                                    ></b-form-textarea>
+                                    <b-card-text v-else>{{list.content}}</b-card-text>
                                 </div>
                             </b-card-body>
 
                             <b-card-footer>
                                 <b-row class="align-items-center">
-                                    <b-col>작성일시: 2022-01-01 12:00</b-col>
-                                    <b-col class="text-right">
-                                        <b-btn size="sm" class="mx-2" @click="historyEdit(i)">
-                                            {{editHistory ? '저장' : '수정'}}
-                                        </b-btn>
-                                        <b-btn size="sm" variant="danger" @click="historyDel(i)">삭제</b-btn>
+                                    <b-col>
+                                        <span class="text-muted">작성일시</span>
+                                        {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                    </b-col>
+                                    <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
+                                        <b-btn v-if="list.edit" size="sm" class="mx-2" @click="editComment(i)">저장</b-btn>
+                                        <b-btn v-else size="sm" class="mx-2" @click="editBtn(i)">수정</b-btn>
+                                        <b-btn size="sm" variant="danger" @click="delComment(list, i)">삭제</b-btn>
                                     </b-col>
                                 </b-row>
                             </b-card-footer>
@@ -168,24 +166,17 @@
 export default {
     data() {
       return {
-        historys: [
-            // {confirmUser: 'admin', title:'제목1', contents: '내용1'},
-            // {confirmUser: 'admin', title:'제목2', contents: '내용2'},
-            // {confirmUser: 'admin', title:'제목3', contents: '내용3'},
-        ],
         statusOptions: [
             { text: '처리대기', value: 'WAIT' },
-            { text: '처리중', value: 'IMG' },
+            { text: '처리중', value: 'ING' },
             { text: '처리완료', value: 'CHECKED' },
         ],
-        newHistory: false,
-        editHistory: false,
+        newComment: false,
         item: {
             name: null,
-            phone: null
+            phone: null,
         },
         itemPhone: null,
-        itemStatus: null
       }
     },
     computed: {
@@ -197,20 +188,51 @@ export default {
         this.getInquiryDetail();
     },
     methods: {
+        async updateStatus(){
+            await this.$axios.put("/admin/inquiry/"+this.id, {
+                status: this.item.status
+            });
+        },
+        async updateComment(){
+            await this.$axios.put("/admin/comments/"+this.id, {
+                content: this.item.content
+            });
+        },
+        async addComment(){
+            const { data } = await this.$axios.post("/admin/comments/"+this.id, this.item);
+            console.log(data)
+            console.log(this.item)
+
+            // if (data.code === "0000") {
+            //     this.$bvModal.msgBoxOk('상담신청이 완료되었습니다. 빠른 시일 내에 연락드리겠습니다.', {
+            //         title: '상담신청 완료',
+            //         size: 'sm',
+            //         buttonSize: 'sm',
+            //         okVariant: 'success',
+            //         centered: true,
+            //         okTitle: '확인',
+            //         footerClass: 'p-2',
+            //     }).then(value => {
+            //         console.log(value)
+            //         Object.assign(this.$data, this.$options.data());
+            //         this.$refs.observer.reset();
+            //         this.checkHide = true;
+            //     })
+            // } 
+        },
         async getInquiryDetail(){
             const { data } = await this.$axios.get("/admin/inquiry/"+this.id);
             console.log(data);
 
             this.item = data.data;
-            this.itemStatus = data.data.status;
             this.itemPhone = data.data.phone;
         },
-        newHistoryToggle() {
-            this.newHistory = !this.newHistory
+        newCommentToggle() {
+            this.newComment = !this.newComment
         },
-        historyDel(i) {
-            console.log(i)
-            // this.selectHistory = i;
+        delComment(list, i) {
+            console.log(list, i)
+            // this.selectComment = i;
             this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
             title: '처리기록 삭제',
             size: 'sm',
@@ -222,9 +244,17 @@ export default {
             centered: true
             })
         },
-        historyEdit(i) {
-            console.log(i)
-            this.editHistory = !this.editHistory;
+        editBtn(i) {
+            this.item.comments[i].edit = true;
+            // this.$nextTick(function () {
+            //     this.$refs.editInput;
+            // })
+        },
+        editComment(i) {
+            this.item.comments[i].edit = false;
+            // this.$nextTick(function () {
+            //     this.$refs.editInput;
+            // })
         },
         phoneFomatter(num) {
             if (num?.length == 11) {
@@ -238,37 +268,46 @@ export default {
         }
     },
     watch: {
-        itemStatus(newVal, oldval) {
-            console.log(newVal, oldval)
-            const h = this.$createElement
-            // Using HTML string
-            const titleVNode = h('div', { domProps: { innerHTML: '처리상태 변경' } })
-            // More complex structure
-            const messageVNode = h('div', { class: ['foobar'] }, [
-                h('p', { class: ['mb-0'] }, [
-                    h('strong', { class: ['fw-900'] }, oldval),
-                    '에서 ',
-                    h('strong', { class: ['fw-900 text-danger'] }, newVal),
-                    '으로 변경되었습니다. ',
-                ]),
-            ])
-            // We must pass the generated VNodes as arrays
-            this.$bvModal.msgBoxOk([messageVNode], {
-                title: [titleVNode],
-                buttonSize: 'sm',
-                centered: true, 
-                size: 'md',
-                okTitle: '확인',
-                okVariant: 'success',
-                footerClass: 'p-2',
-            })
-        }
+        'item.status'(newVal, oldval) {
+            if(newVal == 'WAIT') newVal = '처리대기'
+            if(newVal == 'ING') newVal = '처리중'
+            if(newVal == 'CHECKED') newVal = '처리완료'
+            // if(oldval == 'WAIT') oldval = '처리대기'
+            // if(oldval == 'ING') oldval = '처리중'
+            // if(oldval == 'CHECKED') oldval = '처리완료'
+
+            if(oldval !== undefined) {
+                const h = this.$createElement
+                // Using HTML string
+                const titleVNode = h('div', { domProps: { innerHTML: '처리상태 변경' } })
+                // More complex structure
+                const messageVNode = h('div', { class: ['foobar'] }, [
+                    h('p', { class: ['mb-0'] }, [
+                        // h('strong', { class: ['fw-900'] }, oldval),
+                        // '에서 ',
+                        h('strong', { class: ['fw-900 text-danger'] }, newVal),
+                        ' 변경되었습니다. ',
+                    ]),
+                ])
+                // We must pass the generated VNodes as arrays
+                this.$bvModal.msgBoxOk([messageVNode], {
+                    title: [titleVNode],
+                    buttonSize: 'sm',
+                    centered: true, 
+                    size: 'md',
+                    okTitle: '확인',
+                    okVariant: 'success',
+                    footerClass: 'p-2',
+                })
+                this.updateStatus()
+            }
+        },
     },
   }
 </script>
 
 <style lang="scss" scoped>
-    .historyWrap {
+    .commentsWrap {
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
         padding-top: 1rem;
