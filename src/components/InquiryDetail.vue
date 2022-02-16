@@ -1,7 +1,7 @@
 <template>
     <main>
         <b-container>
-            {{item}}
+            <!-- {{item}} -->
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
                 <b-col :style="{marginRight:'3rem'}">
@@ -63,7 +63,7 @@
                         </b-col>
                         <b-col class="text-right">
                             <b-btn @click="newCommentToggle()">
-                                <font-awesome-icon :icon="newComment ? 'minus' : 'plus'" />
+                                <font-awesome-icon :icon="newCommentShow ? 'minus' : 'plus'" />
                                 기록 작성
                             </b-btn>
                         </b-col>
@@ -72,7 +72,7 @@
                     <b-card 
                     no-body
                     class="mb-3"
-                    v-if="newComment"
+                    v-if="newCommentShow"
                     >
                         <template #header>
                             <b-row class="align-items-center">
@@ -88,7 +88,7 @@
                             placeholder="처리기록 내용을 입력하세요."
                             rows="3"
                             max-rows="6"
-                            v-model="item.comments.content"
+                            v-model="newCommentContent"
                             ></b-form-textarea>
                         </b-card-body>
 
@@ -102,7 +102,7 @@
                     </b-card>
 
                     <!-- 기록 없을 때 -->
-                    <b-card v-if="!item.comments"
+                    <b-card v-if="item.comments === null"
                     border-variant="warning"
                     text-variant="warning"
                     align="center">
@@ -114,7 +114,7 @@
                         <b-card
                         no-body
                         class="mb-3"
-                        v-for="(list, i) in item.comments"
+                        v-for="list in item.comments"
                         :key="list.id"
                         >
                             <template #header>
@@ -126,31 +126,42 @@
                                 </b-row>
                             </template>
 
-                            <b-card-body>
+                            <b-card-body v-if="list.edit">
                                 <div>
                                     <b-card-sub-title class="mb-2">처리기록 내용</b-card-sub-title>
                                     <b-form-textarea
-                                    v-if="list.edit"
                                     size="sm"
                                     v-model="list.content"
                                     rows="3"
                                     max-rows="6"
-                                    ref="editInput"
+                                    ref="editForm"
                                     ></b-form-textarea>
-                                    <b-card-text v-else>{{list.content}}</b-card-text>
+                                </div>
+                            </b-card-body>
+                            <b-card-body v-else>
+                                <div>
+                                    <b-card-sub-title class="mb-2">처리기록 내용</b-card-sub-title>
+                                    <b-card-text>{{list.content}}</b-card-text>
                                 </div>
                             </b-card-body>
 
                             <b-card-footer>
                                 <b-row class="align-items-center">
                                     <b-col>
-                                        <span class="text-muted">작성일시</span>
-                                        {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                        <b-row>
+                                            <span class="text-muted">작성일시</span>
+                                            {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                        </b-row>
+                                        <b-row v-if="$moment(list.createDate).format('YYYY-MM-DD hh:mm a') !== $moment(list.updateDate).format('YYYY-MM-DD hh:mm a')">
+                                            <span class="text-muted">수정일시</span>
+                                            {{ $moment(list.updateDate).format('YYYY-MM-DD hh:mm a') }}
+                                        </b-row>
+                                        {{list.edit}}
                                     </b-col>
                                     <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
-                                        <b-btn v-if="list.edit" size="sm" class="mx-2" @click="editComment(i)">저장</b-btn>
-                                        <b-btn v-else size="sm" class="mx-2" @click="editBtn(i)">수정</b-btn>
-                                        <b-btn size="sm" variant="danger" @click="delComment(list, i)">삭제</b-btn>
+                                        <b-btn v-if="list.edit" size="sm" class="mx-2" @click="updateComment(list)">저장</b-btn>
+                                        <b-btn v-else size="sm" class="mx-2" @click="editBtn(list)">수정</b-btn>
+                                        <b-btn size="sm" variant="danger" @click="delComment(list)">삭제</b-btn>
                                     </b-col>
                                 </b-row>
                             </b-card-footer>
@@ -171,12 +182,13 @@ export default {
             { text: '처리중', value: 'ING' },
             { text: '처리완료', value: 'CHECKED' },
         ],
-        newComment: false,
+        newCommentShow: false,
         item: {
             name: null,
             phone: null,
         },
         itemPhone: null,
+        newCommentContent: null,
       }
     },
     computed: {
@@ -187,38 +199,31 @@ export default {
     mounted() {
         this.getInquiryDetail();
     },
+    created() {
+        
+    },
     methods: {
         async updateStatus(){
             await this.$axios.put("/admin/inquiry/"+this.id, {
                 status: this.item.status
             });
         },
-        async updateComment(){
-            await this.$axios.put("/admin/comments/"+this.id, {
-                content: this.item.content
+        async updateComment(list){
+            const { data } = await this.$axios.put("/admin/comments/"+list.id, {
+                content: list.content
             });
+            console.log(data)
+            list.edit = false;
+            // console.log(list.id)
+            // console.log(list)
+            // console.log(list.content)
         },
         async addComment(){
-            const { data } = await this.$axios.post("/admin/comments/"+this.id, this.item);
+            const { data } = await this.$axios.post("/admin/comments/"+this.id, {
+                content: this.newCommentContent
+            });
             console.log(data)
-            console.log(this.item)
-
-            // if (data.code === "0000") {
-            //     this.$bvModal.msgBoxOk('상담신청이 완료되었습니다. 빠른 시일 내에 연락드리겠습니다.', {
-            //         title: '상담신청 완료',
-            //         size: 'sm',
-            //         buttonSize: 'sm',
-            //         okVariant: 'success',
-            //         centered: true,
-            //         okTitle: '확인',
-            //         footerClass: 'p-2',
-            //     }).then(value => {
-            //         console.log(value)
-            //         Object.assign(this.$data, this.$options.data());
-            //         this.$refs.observer.reset();
-            //         this.checkHide = true;
-            //     })
-            // } 
+            // console.log(this.item.comments.content)
         },
         async getInquiryDetail(){
             const { data } = await this.$axios.get("/admin/inquiry/"+this.id);
@@ -226,13 +231,17 @@ export default {
 
             this.item = data.data;
             this.itemPhone = data.data.phone;
+
+            this.item.comments.forEach(function(el) {
+                // console.log(el)
+                this.$set(el, 'edit', false)
+                // el.edit = false;
+            }, this)
         },
         newCommentToggle() {
-            this.newComment = !this.newComment
+            this.newCommentShow = !this.newCommentShow
         },
-        delComment(list, i) {
-            console.log(list, i)
-            // this.selectComment = i;
+        delComment(list) {
             this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
             title: '처리기록 삭제',
             size: 'sm',
@@ -242,18 +251,16 @@ export default {
             cancelTitle: '취소',
             footerClass: 'p-2',
             centered: true
-            })
+            }).then(()=> {
+                console.log(list)
+            });
         },
-        editBtn(i) {
-            this.item.comments[i].edit = true;
+        editBtn(list, i) {
+            list.edit = true
+            console.log(list, i)
+            console.log(this.$refs);
             // this.$nextTick(function () {
-            //     this.$refs.editInput;
-            // })
-        },
-        editComment(i) {
-            this.item.comments[i].edit = false;
-            // this.$nextTick(function () {
-            //     this.$refs.editInput;
+            //     this.$refs.editInput.focus();
             // })
         },
         phoneFomatter(num) {

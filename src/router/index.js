@@ -48,6 +48,12 @@ const routes = [
         meta: { requiresAuth: true, roleSuper: "SUPER" },
       },
       {
+        path: "/admin/userCreate",
+        name: "UserCreate",
+        component: () => import('../components/UserCreate.vue'),
+        meta: { requiresAuth: true, roleSuper: "SUPER" },
+      },
+      {
         path: "/admin/myAccount",
         name: "MyAccount",
         component: () => import('../components/MyAccount.vue'),

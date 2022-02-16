@@ -1,6 +1,7 @@
 <template>
     <main>
         <b-container class="w-25">
+            <h1>로그인</h1>
             <validation-observer ref="observer" v-slot="{ handleSubmit }">
                 <b-form @submit.prevent="handleSubmit(login)">
                     <validation-provider
@@ -62,16 +63,50 @@ export default {
             const { data } = await this.$axios.post("/auth/token", this.input);
             console.log(data);
             // this.$store.dispatch('setLogin', data.data.token, data.data.serviceId)
-            this.$store.dispatch('setToken', data.data.token)
-            this.$store.dispatch('setServiceId', data.data.serviceId)
-            this.$store.dispatch('setRole', data.data.role)
             
             if (data.code === "0000") {
                 // console.log(this.input);
-                console.log(this.$store.state.token);
+                // console.log(this.$store.state.token);
                 // console.log(this.$store.state.serviceId);
+                this.$store.dispatch('setToken', data.data.token)
+                this.$store.dispatch('setServiceId', data.data.serviceId)
+                this.$store.dispatch('setRole', data.data.role)
+                this.$store.dispatch('logoutTimer')
                 this.$router.push('/admin/inquiryList');
-            }
+            } else if (data.code === "1003") {
+                // console.log(data.code)
+                this.$bvModal.msgBoxOk('탈퇴된 계정입니다.', {
+                    title: '로그인 실패',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            } else if (data.code === "1005") {
+                // console.log(data.code)
+                this.$bvModal.msgBoxOk('입력하신 아이디 또는 비밀번호가 일치하지 않습니다.', {
+                    title: '로그인 실패',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            } else if (data.code === "4041") {
+                // console.log(data.code)
+                this.$bvModal.msgBoxOk('요청하신 계정을 찾을 수 없습니다.', {
+                    title: '로그인 실패',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            } 
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;

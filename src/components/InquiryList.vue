@@ -9,6 +9,7 @@
         <!-- <p>{{inquiryItems[2].user.serviceId === null ? 'ㄴㄴㄴㄴ' : inquiryItems[2].user.serviceId}}</p> -->
         
         <b-container>
+            <h1>상담 리스트</h1>
             정렬: 
             <b-form-select
             v-model="filter" class="p-1">

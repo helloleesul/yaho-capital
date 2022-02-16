@@ -10,7 +10,7 @@
                     <b-form-input
                     id="password-input"
                     name="password-input"
-                    v-model="input.originPassword"
+                    v-model="input.originalPassword"
                     type="password"
                     placeholder="비밀번호를 입력하세요."
                     :state="getValidationState(validationContext)"
@@ -73,7 +73,7 @@ export default {
         return {
             input: {
                 newPassword: null,
-                originPassword: null
+                originalPassword: null
             },
             newPasswordCheck: null,
             change: false

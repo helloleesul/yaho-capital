@@ -1,6 +1,7 @@
 <template>
     <main>
         <b-container class="w-25">
+            <h1>내 정보관리</h1>
             <validation-observer ref="observer" v-slot="{ handleSubmit }">
                 <b-form @submit.prevent="handleSubmit(updateMe)">
                     <validation-provider
