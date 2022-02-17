@@ -1,5 +1,5 @@
 <template>
-  <validation-observer ref="observer" v-slot="{ handleSubmit }">
+  <validation-observer ref="observer" v-slot="{ handleSubmit }" v-if="show">
         <b-form @submit.prevent="handleSubmit(changePwd)">
             <validation-provider
             name="현재 비밀번호"
@@ -60,8 +60,7 @@
             </validation-provider>
 
             <b-button type="submit" variant="primary">비밀번호 변경</b-button>
-            Return value: {{ String(change) }}
-            {{input}}
+            <!-- {{input}} -->
         </b-form>
   </validation-observer>
 </template>
@@ -69,6 +68,9 @@
 <script>
 export default {
     name: 'ChangePwd',
+    props: {
+        show: Boolean
+    },
     data() {
         return {
             input: {
@@ -76,14 +78,14 @@ export default {
                 originalPassword: null
             },
             newPasswordCheck: null,
-            change: false
+            change: false,
         }
     },
     methods: {
         async changePwd(){
             const { data } = await this.$axios.post("/admin/users/reset-password", this.input);
             console.log(data)
-            console.log(this.input)
+            // console.log(this.input)
 
             if (data.code === "0000") {
                 this.$bvModal.msgBoxOk('비밀번호가 성공적으로 변경되었습니다.', {
@@ -94,8 +96,25 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                }).then(() => {
+                    Object.assign(this.$data, this.$options.data());
+                    this.$refs.observer.reset();
+                    this.$emit('hide')
                 })
-            } 
+            } else if (data.code === "1006") {
+                this.$bvModal.msgBoxOk('입력하신 현재 비밀번호가 일치하지 않습니다.', {
+                    title: '비밀번호 불일치',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(() => {
+                    Object.assign(this.$data, this.$options.data());
+                    this.$refs.observer.reset();
+                })
+            }
         },
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;

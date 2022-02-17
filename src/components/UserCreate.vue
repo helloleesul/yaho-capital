@@ -102,30 +102,74 @@ export default {
         async userCreate(){
             const { data } = await this.$axios.post("/admin/users", this.input);
             console.log(data)
-            console.log(this.input)
+            // console.log(this.input)
 
-            // if (data.code === "0000") {
-            //     this.$bvModal.msgBoxOk('상담신청이 완료되었습니다. 빠른 시일 내에 연락드리겠습니다.', {
-            //         title: '상담신청 완료',
-            //         size: 'sm',
-            //         buttonSize: 'sm',
-            //         okVariant: 'success',
-            //         centered: true,
-            //         okTitle: '확인',
-            //         footerClass: 'p-2',
-            //     }).then(value => {
-            //         console.log(value)
-            //         Object.assign(this.$data, this.$options.data());
-            //         this.$refs.observer.reset();
-            //         this.checkHide = true;
-            //     })
-            // } 
+            if (data.code === "0000") {
+                this.$bvModal.msgBoxOk('회원 계정이 생성되었습니다.', {
+                    title: '회원 계정 생성',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(() => {
+                    // console.log(value)
+                    Object.assign(this.$data, this.$options.data());
+                    this.$refs.observer.reset();
+                    this.$router.push('/admin/userList');
+                })
+            } else if (data.code === "1002") {
+                this.$bvModal.msgBoxOk('입력하신 아이디가 이미 존재합니다.', {
+                    title: '아이디 사용 불가',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            }
         },
         async serviceIdCheck(){
             const { data } = await this.$axios.post("/admin/users/valid-id", {
                 serviceId: this.input.serviceId
             });
             console.log(data)
+            console.log(this.input.serviceId)
+            if (data.code === "0000") {
+                if(this.input.serviceId) {
+                    this.$bvModal.msgBoxOk('사용 가능한 아이디입니다.', {
+                        title: '아이디 사용 가능',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        centered: true,
+                        okTitle: '확인',
+                        footerClass: 'p-2',
+                    })
+                } else {
+                    this.$bvModal.msgBoxOk('아이디 값을 입력하세요.', {
+                        title: '아이디 미입력',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        centered: true,
+                        okTitle: '확인',
+                        footerClass: 'p-2',
+                    })
+                }
+            } else if (data.code === "1002") {
+                this.$bvModal.msgBoxOk('입력하신 아이디가 이미 존재합니다.', {
+                    title: '아이디 중복',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            }
         },
 
         getValidationState({ dirty, validated, valid = null }) {

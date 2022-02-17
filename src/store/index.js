@@ -40,12 +40,12 @@ export default new Vuex.Store({
     },
 
     logoutTimer() {
-      const setTime = 1; 
-      const hour = 60; 
+      const hour = 1; 
+      const minTime = 60; 
       const minute = 60 * 1000;
-      const timer = setTime * hour * minute; 
+      const timer = hour * minTime * minute; 
       setTimeout(function(){
-        alert(setTime+'시간이 경과하여 로그아웃합니다.');
+        alert(hour + '시간이 경과하여 로그아웃합니다.');
         localStorage.removeItem('token');
         localStorage.removeItem('serviceId');
         localStorage.removeItem('role');

@@ -10,14 +10,13 @@
         
         <b-container>
             <h1>계정 리스트</h1>
-            <!-- 정렬: 
+            정렬: 
             <b-form-select
             v-model="filter" class="p-1">
                 <b-form-select-option value="">전체</b-form-select-option>
-                <b-form-select-option value="WAIT">처리대기</b-form-select-option>
-                <b-form-select-option value="ING">처리중</b-form-select-option>
-                <b-form-select-option value="CHECKED">처리완료</b-form-select-option>
-            </b-form-select> -->
+                <b-form-select-option value="false">활성</b-form-select-option>
+                <b-form-select-option value="true">비활성</b-form-select-option>
+            </b-form-select>
             <b-button size="sm" class="mr-2"
             @click="$router.push('/admin/userCreate')">
                 계정 생성
@@ -51,7 +50,7 @@
             :filter="filter"
             :filter-included-fields="filterOn"
             @filtered="onFiltered">
-                <template #table-caption>This is a table caption at the top.</template>
+                <!-- <template #table-caption>This is a table caption at the top.</template> -->
                 <template #cell(status)="row">
                     {{row.item.status == 'WAIT' ? '처리대기' : ''}}
                     {{row.item.status == 'ING' ? '처리중' : ''}}
@@ -180,6 +179,26 @@ export default {
             console.log(data);
             // console.log(row.item.leave);
             // console.log(this.userItems.leave);
+            const h = this.$createElement
+            const titleVNode = h('div', { domProps: { innerHTML: '회원상태 변경' } })
+            const messageVNode = h('div', { class: ['foobar'] }, [
+                h('p', { class: ['mb-0'] }, [
+                    h('strong', { class: ['fw-900'] }, row.item.name),
+                        '회원을 ',
+                    h('strong', { class: ['fw-900 text-danger'] }, row.item.leave ? '비활성':'활성'),
+                    '상태로 변경했습니다. ',
+                ]),
+            ])
+            // We must pass the generated VNodes as arrays
+            this.$bvModal.msgBoxOk([messageVNode], {
+                title: [titleVNode],
+                buttonSize: 'sm',
+                centered: true, 
+                size: 'sm',
+                okTitle: '확인',
+                okVariant: 'success',
+                footerClass: 'p-2',
+            })
         },
         onFiltered(filteredItems) {
             this.totalElements = filteredItems.length

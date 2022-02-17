@@ -1,7 +1,7 @@
 <template>
     <main>
         <b-container>
-            <!-- {{item}} -->
+            <!-- {{item.comments}} -->
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
                 <b-col :style="{marginRight:'3rem'}">
@@ -11,14 +11,23 @@
                             @click="$router.go(-1)"
                             ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
                         </b-col>
+                        <b-col class="text-right">
+                            <span class="text-muted">처리자 </span>
+                            <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
+                        </b-col>
                     </b-row>
                     <b-card no-body v-model="item">
                         <template #header>
-                            <span class="text-muted">이름</span>
-                            <h5 class="mb-0">{{ item.name }}</h5>
+                            <span class="text-muted">상담신청 상세</span>
                         </template>
 
                         <b-list-group flush>
+                            <b-list-group-item>
+                                <span class="text-muted">이름</span>
+                                <b-card-text>
+                                    {{ item.name }}
+                                </b-card-text>
+                            </b-list-group-item>
                             <b-list-group-item>
                                 <span class="text-muted">연락처</span>
                                 <b-card-text>
@@ -36,14 +45,16 @@
                         </b-card-body>
 
                         <b-card-footer>
-                            <b-card-text>
-                                <span class="text-muted">신청일시</span>
-                                {{ $moment(item.createDate).format('YYYY-MM-DD hh:mm a') }}
-                            </b-card-text>
-                            <b-card-text>
-                                <span class="text-muted">처리자</span>
-                                <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
-                            </b-card-text>
+                            <b-row class="align-items-center">
+                                <b-col class="text-right">
+                                    <span class="text-muted">신청일시</span>
+                                    {{ $moment(item.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                </b-col>
+                                <!-- <b-col class="text-right">
+                                    <span class="text-muted">처리자</span>
+                                    <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
+                                </b-col> -->
+                            </b-row>
                         </b-card-footer>
                     </b-card>
                 </b-col>
@@ -76,8 +87,12 @@
                     >
                         <template #header>
                             <b-row class="align-items-center">
+                                <b-col>
+                                    <font-awesome-icon icon="user" />
+                                    {{ $store.state.serviceId }}
+                                </b-col>
                                 <b-col class="text-right">
-                                    <font-awesome-icon icon="user" /> {{ $store.state.serviceId }}
+                                    <b-btn size="sm" @click="addComment()">저장</b-btn>
                                 </b-col>
                             </b-row>
                         </template>
@@ -89,16 +104,17 @@
                             rows="3"
                             max-rows="6"
                             v-model="newCommentContent"
+                            ref="commentInput"
                             ></b-form-textarea>
                         </b-card-body>
 
-                        <b-card-footer>
+                        <!-- <b-card-footer>
                             <b-row class="align-items-center">
                                 <b-col class="text-right">
                                     <b-btn size="sm" @click="addComment()">저장</b-btn>
                                 </b-col>
                             </b-row>
-                        </b-card-footer>
+                        </b-card-footer> -->
                     </b-card>
 
                     <!-- 기록 없을 때 -->
@@ -120,8 +136,18 @@
                             <template #header>
                                 <b-row class="align-items-center">
                                     {{list.id}}
-                                    <b-col class="text-right">
+                                    <b-col>
+                                        <span class="text-muted">기록자 </span>
                                         <font-awesome-icon icon="user" /> {{list.user.serviceId}}
+                                    </b-col>
+                                    <!-- <b-col class="text-right">
+                                        <span class="text-muted">작성일시</span>
+                                        {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                    </b-col> -->
+                                    <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
+                                        <b-btn v-if="list.edit" size="sm" class="mx-2" @click="updateComment(list)">저장</b-btn>
+                                        <b-btn v-else size="sm" class="mx-2" @click="editBtn(list)">수정</b-btn>
+                                        <b-btn size="sm" variant="danger" @click="delComment(list)">삭제</b-btn>
                                     </b-col>
                                 </b-row>
                             </template>
@@ -132,9 +158,9 @@
                                     <b-form-textarea
                                     size="sm"
                                     v-model="list.content"
+                                    placeholder="처리기록 내용을 입력하세요."
                                     rows="3"
                                     max-rows="6"
-                                    ref="editForm"
                                     ></b-form-textarea>
                                 </div>
                             </b-card-body>
@@ -147,22 +173,20 @@
 
                             <b-card-footer>
                                 <b-row class="align-items-center">
-                                    <b-col>
-                                        <b-row>
-                                            <span class="text-muted">작성일시</span>
-                                            {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
-                                        </b-row>
-                                        <b-row v-if="$moment(list.createDate).format('YYYY-MM-DD hh:mm a') !== $moment(list.updateDate).format('YYYY-MM-DD hh:mm a')">
-                                            <span class="text-muted">수정일시</span>
-                                            {{ $moment(list.updateDate).format('YYYY-MM-DD hh:mm a') }}
-                                        </b-row>
-                                        {{list.edit}}
+                                    <b-col v-if="$moment(list.createDate).format('YYYY-MM-DD hh:mm a') !== $moment(list.updateDate).format('YYYY-MM-DD hh:mm a')">
+                                        <span class="text-muted">수정일시</span>
+                                        {{ $moment(list.updateDate).format('YYYY-MM-DD hh:mm a') }}
                                     </b-col>
-                                    <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
+                                    <b-col class="text-right">
+                                        <span class="text-muted">작성일시</span>
+                                        {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
+                                    </b-col>
+                                    <!-- {{list.edit}} -->
+                                    <!-- <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
                                         <b-btn v-if="list.edit" size="sm" class="mx-2" @click="updateComment(list)">저장</b-btn>
                                         <b-btn v-else size="sm" class="mx-2" @click="editBtn(list)">수정</b-btn>
                                         <b-btn size="sm" variant="danger" @click="delComment(list)">삭제</b-btn>
-                                    </b-col>
+                                    </b-col> -->
                                 </b-row>
                             </b-card-footer>
                         </b-card>
@@ -207,13 +231,49 @@ export default {
             await this.$axios.put("/admin/inquiry/"+this.id, {
                 status: this.item.status
             });
+            this.getInquiryDetail()
         },
         async updateComment(list){
             const { data } = await this.$axios.put("/admin/comments/"+list.id, {
                 content: list.content
             });
             console.log(data)
-            list.edit = false;
+            if (data.code === "0000") {
+                this.$bvModal.msgBoxOk('기록이 수정되었습니다.', {
+                    title: '기록 수정',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(() => {
+                    list.edit = false;
+                    this.getInquiryDetail()
+                })
+            } else if (data.code === "4001") {
+                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
+                    title: '내용 입력',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(() => {
+                    this.getInquiryDetail()
+                })
+            } else if (data.code === "4040") {
+                this.$bvModal.msgBoxOk('요청하신 정보를 찾을 수 없습니다.', {
+                    title: '기록 ID 불일치',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            }
             // console.log(list.id)
             // console.log(list)
             // console.log(list.content)
@@ -223,6 +283,42 @@ export default {
                 content: this.newCommentContent
             });
             console.log(data)
+            if (data.code === "0000") {
+                this.$bvModal.msgBoxOk('새 기록이 작성되었습니다.', {
+                    title: '기록 작성',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                }).then(() => {
+                    this.newCommentShow = false;
+                    this.newCommentContent = null;
+                    this.getInquiryDetail();
+                })
+            } else if (data.code === "4001") {
+                this.$refs.commentInput.focus()
+                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
+                    title: '내용 입력',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            } else if (data.code === "4040") {
+                this.$bvModal.msgBoxOk('요청하신 정보를 찾을 수 없습니다.', {
+                    title: '기록 ID 불일치',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                })
+            }
             // console.log(this.item.comments.content)
         },
         async getInquiryDetail(){
@@ -235,33 +331,31 @@ export default {
             this.item.comments.forEach(function(el) {
                 // console.log(el)
                 this.$set(el, 'edit', false)
-                // el.edit = false;
             }, this)
         },
         newCommentToggle() {
             this.newCommentShow = !this.newCommentShow
         },
-        delComment(list) {
-            this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
-            title: '처리기록 삭제',
-            size: 'sm',
-            buttonSize: 'sm',
-            okVariant: 'danger',
-            okTitle: '삭제',
-            cancelTitle: '취소',
-            footerClass: 'p-2',
-            centered: true
-            }).then(()=> {
-                console.log(list)
-            });
+        async delComment(list) {
+            const { data } = await this.$axios.delete("/admin/comments/"+list.id);
+            console.log(data)
+
+            // this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
+            // title: '처리기록 삭제',
+            // size: 'sm',
+            // buttonSize: 'sm',
+            // okVariant: 'danger',
+            // okTitle: '삭제',
+            // cancelTitle: '취소',
+            // footerClass: 'p-2',
+            // centered: true
+            // }).then(()=> {
+            //     console.log(list)
+            // });
         },
-        editBtn(list, i) {
+        editBtn(list) {
             list.edit = true
-            console.log(list, i)
-            console.log(this.$refs);
-            // this.$nextTick(function () {
-            //     this.$refs.editInput.focus();
-            // })
+            // console.log(list, i)
         },
         phoneFomatter(num) {
             if (num?.length == 11) {
@@ -301,12 +395,13 @@ export default {
                     title: [titleVNode],
                     buttonSize: 'sm',
                     centered: true, 
-                    size: 'md',
+                    size: 'sm',
                     okTitle: '확인',
                     okVariant: 'success',
                     footerClass: 'p-2',
+                }).then(() => {
+                    this.updateStatus();
                 })
-                this.updateStatus()
             }
         },
     },

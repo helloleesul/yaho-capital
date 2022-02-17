@@ -33,7 +33,7 @@
 
                     <!-- 비밀번호 변경 -->
                     <b-btn class="w-100 my-3" @click="changePwdShow = !changePwdShow">비밀번호 변경</b-btn>
-                    <ChangePwd v-if="changePwdShow" />
+                    <ChangePwd :show="changePwdShow" @hide="changePwdHide()" />
 
                     <validation-provider
                     name="연락처"
@@ -76,7 +76,7 @@
                     <b-button type="submit" variant="primary">수정</b-button>
                 </b-form>
             </validation-observer>
-            {{user}}
+            <!-- {{user}} -->
         </b-container>
     </main>
 </template>
@@ -111,6 +111,9 @@ export default {
                     footerClass: 'p-2',
                 })
             });
+        },
+        changePwdHide() {
+            this.changePwdShow = false
         },
 
         async getMe(){

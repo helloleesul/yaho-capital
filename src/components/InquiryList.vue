@@ -47,7 +47,7 @@
             :filter="filter"
             :filter-included-fields="filterOn"
             @filtered="onFiltered">
-                <template #table-caption>This is a table caption at the top.</template>
+                <!-- <template #table-caption>This is a table caption at the top.</template> -->
                 <template #cell(status)="row">
                     {{row.item.status == 'WAIT' ? '처리대기' : ''}}
                     {{row.item.status == 'ING' ? '처리중' : ''}}

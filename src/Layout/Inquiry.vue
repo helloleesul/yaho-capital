@@ -93,7 +93,7 @@ export default {
         async submit(){
             const { data } = await this.$axios.post("/api/v1/inquiry", this.input);
             console.log(data)
-            console.log(this.input)
+            // console.log(this.input)
 
             if (data.code === "0000") {
                 this.$bvModal.msgBoxOk('상담신청이 완료되었습니다. 빠른 시일 내에 연락드리겠습니다.', {
@@ -104,8 +104,8 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
-                }).then(value => {
-                    console.log(value)
+                }).then(() => {
+                    // console.log(value)
                     Object.assign(this.$data, this.$options.data());
                     this.$refs.observer.reset();
                     this.checkHide = true;
