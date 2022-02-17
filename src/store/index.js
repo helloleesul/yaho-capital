@@ -49,6 +49,7 @@ export default new Vuex.Store({
         localStorage.removeItem('token');
         localStorage.removeItem('serviceId');
         localStorage.removeItem('role');
+        axios.defaults.headers.common['Authorization'] = undefined;
         location.replace('/admin')
       }, timer);
     },
@@ -56,6 +57,7 @@ export default new Vuex.Store({
       localStorage.removeItem('token');
       localStorage.removeItem('serviceId');
       localStorage.removeItem('role');
+      axios.defaults.headers.common['Authorization'] = undefined;
       location.replace('/admin')
     }
   },

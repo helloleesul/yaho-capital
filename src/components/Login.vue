@@ -63,6 +63,12 @@ export default {
             const { data } = await this.$axios.post("/auth/token", this.input);
             console.log(data);
             // this.$store.dispatch('setLogin', data.data.token, data.data.serviceId)
+
+            if (!data.data.first) {
+                console.log('첫 로그인이여')
+                location.replace('/admin/myAccount')
+                alert(data.data.first);
+            }
             
             if (data.code === "0000") {
                 // console.log(this.input);

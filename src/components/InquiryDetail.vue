@@ -1,6 +1,7 @@
 <template>
     <main>
         <b-container>
+            <!-- {{item}} -->
             <!-- {{item.comments}} -->
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
@@ -118,7 +119,7 @@
                     </b-card>
 
                     <!-- 기록 없을 때 -->
-                    <b-card v-if="item.comments === null"
+                    <b-card v-if="item.comments === null || !item.comments.length"
                     border-variant="warning"
                     text-variant="warning"
                     align="center">
@@ -328,10 +329,13 @@ export default {
             this.item = data.data;
             this.itemPhone = data.data.phone;
 
-            this.item.comments.forEach(function(el) {
-                // console.log(el)
-                this.$set(el, 'edit', false)
-            }, this)
+            if (this.item.comments !== null) {
+                this.item.comments.forEach(function(el) {
+                    // console.log(el)
+                    this.$set(el, 'edit', false)
+                }, this)
+            }
+
         },
         newCommentToggle() {
             this.newCommentShow = !this.newCommentShow
@@ -340,18 +344,18 @@ export default {
             const { data } = await this.$axios.delete("/admin/comments/"+list.id);
             console.log(data)
 
-            // this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
-            // title: '처리기록 삭제',
-            // size: 'sm',
-            // buttonSize: 'sm',
-            // okVariant: 'danger',
-            // okTitle: '삭제',
-            // cancelTitle: '취소',
-            // footerClass: 'p-2',
-            // centered: true
-            // }).then(()=> {
-            //     console.log(list)
-            // });
+            this.$bvModal.msgBoxConfirm('기록을 삭제하시겠습니까?', {
+            title: '처리기록 삭제',
+            size: 'sm',
+            buttonSize: 'sm',
+            okVariant: 'danger',
+            okTitle: '삭제',
+            cancelTitle: '취소',
+            footerClass: 'p-2',
+            centered: true
+            }).then(()=> {
+                this.getInquiryDetail()
+            });
         },
         editBtn(list) {
             list.edit = true

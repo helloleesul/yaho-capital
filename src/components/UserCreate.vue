@@ -39,7 +39,7 @@
                         </b-form-group>
                         <b-btn @click="serviceIdCheck()">중복확인</b-btn>
                     </validation-provider>
-                    <validation-provider
+                    <!-- <validation-provider
                     name="이메일"
                     :rules="{ required: false, email: true }"
                     v-slot="validationContext"
@@ -75,7 +75,7 @@
                             ></b-form-input>
                             <b-form-invalid-feedback id="tel-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                         </b-form-group>
-                    </validation-provider>
+                    </validation-provider> -->
 
                     <b-button type="submit" variant="primary">생성</b-button>
                     {{input}}
