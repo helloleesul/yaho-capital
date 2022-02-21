@@ -128,6 +128,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 })
             }
         },
@@ -157,6 +158,7 @@ export default {
                         centered: true,
                         okTitle: '확인',
                         footerClass: 'p-2',
+                        noCloseOnBackdrop: true
                     })
                 }
             } else if (data.code === "1002") {
@@ -168,6 +170,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 })
             }
         },

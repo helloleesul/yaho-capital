@@ -1,4 +1,10 @@
 @import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+@font-face {
+  font-family: 'SBAggroB';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @use "sass:math";
 
@@ -144,4 +150,10 @@ $line-heights: (135, 160, 165, 170, 180, 200, 225);
 }
 .underline {
   text-decoration: underline !important;
+}
+.decoration-0 {
+  text-decoration: none !important;
+}
+.font-italic {
+  font-style: italic !important;
 }

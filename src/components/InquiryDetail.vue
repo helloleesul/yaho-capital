@@ -261,6 +261,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 }).then(() => {
                     this.getInquiryDetail()
                 })
@@ -273,6 +274,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 })
             }
             // console.log(list.id)
@@ -308,6 +310,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 })
             } else if (data.code === "4040") {
                 this.$bvModal.msgBoxOk('요청하신 정보를 찾을 수 없습니다.', {
@@ -318,6 +321,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 })
             }
             // console.log(this.item.comments.content)
@@ -352,7 +356,8 @@ export default {
             okTitle: '삭제',
             cancelTitle: '취소',
             footerClass: 'p-2',
-            centered: true
+            centered: true,
+            noCloseOnBackdrop: true
             }).then(()=> {
                 this.getInquiryDetail()
             });

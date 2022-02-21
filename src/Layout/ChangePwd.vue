@@ -60,7 +60,7 @@
             </validation-provider>
 
             <b-button type="submit" variant="primary">비밀번호 변경</b-button>
-            <!-- {{input}} -->
+            {{input}}
         </b-form>
   </validation-observer>
 </template>
@@ -69,7 +69,7 @@
 export default {
     name: 'ChangePwd',
     props: {
-        show: Boolean
+        show: Boolean,
     },
     data() {
         return {
@@ -78,7 +78,6 @@ export default {
                 originalPassword: null
             },
             newPasswordCheck: null,
-            change: false,
         }
     },
     methods: {
@@ -110,6 +109,7 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true
                 }).then(() => {
                     Object.assign(this.$data, this.$options.data());
                     this.$refs.observer.reset();

@@ -1,9 +1,9 @@
 <template>
-    <header class="position-fixed w-100 bg-warning text-white">
+    <header class="position-fixed w-100 yaho yellow" id="header">
         <b-container>
             <b-row class="align-items-center justify-content-between">
                 <b-col class="col-3">
-                    <b-navbar-brand tag="h1" class="m-0 p-0 fw-900 text-40">yaho</b-navbar-brand>
+                    <b-navbar-brand tag="h1" class="m-0 p-0 fw-900 text-30 font-italic">야호 캐피탈</b-navbar-brand>
                 </b-col>
                 <!-- 관리자 경로 -->
                 <b-col v-if="$store.getters.isLogin" class="col-8 text-20 text-right p-0">
@@ -33,13 +33,14 @@
                 </b-col>
                 <!-- 기본 경로 -->
                 <b-col v-else class="col-3 text-20 text-right p-0">
-                    <span class="mx-2">
-                        <font-awesome-icon icon="headset" />
+                    <span class="fw-900">
+                        <!-- <font-awesome-icon icon="headset" /> -->
                         상담전화
                     </span>
-                    <b-btn href="tel:02-1234-1234" variant="link" class="text-decoration-none text-white px-0 text-20 fw-900">
+                    <span class="mx-2">|</span>
+                    <a href="tel:02-1234-1234" class="fw-900">
                         02-1234-1234
-                    </b-btn>
+                    </a>
                 </b-col>
             </b-row>
         </b-container>

@@ -30,11 +30,6 @@
                             ></b-form-input>
                         </b-form-group>
                     </validation-provider>
-
-                    <!-- 비밀번호 변경 -->
-                    <b-btn class="w-100 my-3" @click="changePwdShow = !changePwdShow">비밀번호 변경</b-btn>
-                    <ChangePwd :show="changePwdShow" @hide="changePwdHide()" />
-
                     <validation-provider
                     name="연락처"
                     :rules="{ required: true, integer: true, min: 9 }"
@@ -73,10 +68,14 @@
                         </b-form-group>
                     </validation-provider>
 
-                    <b-button type="submit" variant="primary">수정</b-button>
+                    <!-- 비밀번호 변경 -->
+                    <b-btn class="w-100 my-3" @click="changePwdToggle()">비밀번호 변경</b-btn>
+                    <ChangePwd :show="changePwdShow" @hide="changePwdHide()" />
+
+                    <b-button type="submit" variant="primary" v-if="update">수정</b-button>
                 </b-form>
             </validation-observer>
-            <!-- {{user}} -->
+            {{user}}
         </b-container>
     </main>
 </template>
@@ -90,6 +89,7 @@ export default {
         return {
             user:{},
             changePwdShow: false,
+            update: true,
         }
     },
     mounted() {
@@ -97,10 +97,14 @@ export default {
     },
     methods: {
         async updateMe(){
-            await this.$axios.put("/admin/users/me", {
+            const { data } = await this.$axios.put("/admin/users/me", {
                 email: this.user.email,
                 phone: this.user.phone,
-            }).then(()=> {
+                second: this.user.second
+            })
+            console.log(data);
+
+            if (data.code === "0000") {
                 this.$bvModal.msgBoxOk('내 정보가 성공적으로 수정되었습니다.', {
                     title: '내 정보수정',
                     size: 'sm',
@@ -110,10 +114,27 @@ export default {
                     okTitle: '확인',
                     footerClass: 'p-2',
                 })
-            });
+            } else if (data.code === "1007") {
+                this.$bvModal.msgBoxOk('가입 시 반드시 비밀번호를 변경해야합니다.', {
+                    title: '비밀번호 변경',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                    noCloseOnBackdrop: true
+                })
+            }
         },
         changePwdHide() {
             this.changePwdShow = false
+            this.user.second = true
+            this.update = !this.update
+        },
+        changePwdToggle() {
+            this.changePwdShow = !this.changePwdShow
+            this.update = !this.update
         },
 
         async getMe(){
@@ -121,6 +142,21 @@ export default {
             console.log(data);
             
             this.user = data.data;
+
+            if(!this.user.second) {
+                this.$bvModal.msgBoxOk('가입 시 반드시 비밀번호를 변경해야합니다.', {
+                    title: '비밀번호 변경',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    centered: true,
+                    okTitle: '확인',
+                    footerClass: 'p-2',
+                    noCloseOnBackdrop: true
+                })
+                this.changePwdShow = true
+                this.update = false
+            }
         },
 
         getValidationState({ dirty, validated, valid = null }) {
