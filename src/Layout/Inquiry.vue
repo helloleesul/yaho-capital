@@ -1,14 +1,14 @@
 <template>
     <validation-observer ref="observer" v-slot="{ handleSubmit }">
         <b-form @submit.prevent="handleSubmit(submit)">
-            <div class="d-flex justify-content-between mb-4" style="gap: 1rem">
+            <div class="d-flex justify-content-between mb-4" :style="{gap: '1rem'}">
                 <validation-provider
                 name="이름"
                 :rules="{ required: true, min: 1 }"
                 v-slot="validationContext"
-                :style="inquiryStyle"
+                class="w-100"
                 >
-                    <b-form-group :class="[ inquiryClass ]" id="name-input-group" label="이름" label-for="name-input">
+                    <b-form-group id="name-input-group" label="이름" label-for="name-input">
                         <b-form-input
                         id="name-input"
                         name="name-input"
@@ -24,9 +24,9 @@
                 name="연락처"
                 :rules="{ required: true, integer: true, min: 9, max: 11 }"
                 v-slot="validationContext"
-                :style="inquiryStyle"
+                class="w-100"
                 >
-                    <b-form-group :class="[ inquiryClass ]" id="tel-input-group" label="연락처" label-for="tel-input">
+                    <b-form-group id="tel-input-group" label="연락처" label-for="tel-input">
                         <b-form-input
                         id="tel-input"
                         name="tel-input"
@@ -43,9 +43,9 @@
                 <validation-provider
                 name="상담내용"
                 :rules="{ required: false }"
-                :style="inquiryStyle"
+                class="w-100"
                 >
-                    <b-form-group :class="[ inquiryClass ]" id="contents-input-group" label="상담내용" label-for="contents-input">
+                    <b-form-group id="contents-input-group" label="상담내용" label-for="contents-input">
                         <b-form-textarea
                         id="contents-input"
                         v-model="input.content" 
@@ -77,8 +77,8 @@
                             <b-form-invalid-feedback id="check-input-feedback" :class="{'hide': checkHide}">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                         </b-form-checkbox-group>
                 </validation-provider>
-                <b-button type="submit" pill style="height:fit-content;background:#FDDA00;border:3px solid #000">
-                    <span class="text-20 px-4 fw-900" style="color:#000">상담신청</span>
+                <b-button type="submit" pill :style="{height:'fit-content',background:'#FDDA00',border:'3px solid #000'}">
+                    <span class="text-20 px-4 fw-900" :style="{color:'#000'}">상담신청</span>
                 </b-button>
             </div>
             <!-- {{ check }} -->
@@ -98,11 +98,6 @@ export default {
             },
             check: [],
             checkHide: false,
-            inquiryStyle: {
-                width: '100%'
-            },
-            inquiryClass: ['align-top'],
-            check1Title: '개인정보취급방침이용동의'
         }
     },
     methods: {
@@ -145,11 +140,5 @@ export default {
 }
 #contents-input {
     height: 38px;
-}
-
-.form-group label {
-   margin-bottom: 5px;
-   font-size: 20px;
-   font-weight: 900;
 }
 </style>

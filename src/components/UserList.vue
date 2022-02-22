@@ -9,13 +9,15 @@
         <!-- <p>{{userItems[2].user.serviceId === null ? 'ㄴㄴㄴㄴ' : userItems[2].user.serviceId}}</p> -->
         
         <b-container>
-            <h1>계정 리스트</h1>
+            <b-row class="yellow-wrap title mb-4">
+                <p class="text-30 fw-900 m-0">계정관리</p>
+            </b-row>
             정렬: 
             <b-form-select
             v-model="filter" class="p-1">
                 <b-form-select-option value="">전체</b-form-select-option>
-                <b-form-select-option value="false">활성</b-form-select-option>
-                <b-form-select-option value="true">비활성</b-form-select-option>
+                <b-form-select-option value="false">활성 false</b-form-select-option>
+                <b-form-select-option value="true">비활성 true</b-form-select-option>
             </b-form-select>
             <b-button size="sm" class="mr-2"
             @click="$router.push('/admin/userCreate')">
@@ -51,20 +53,24 @@
             :filter-included-fields="filterOn"
             @filtered="onFiltered">
                 <!-- <template #table-caption>This is a table caption at the top.</template> -->
-                <template #cell(status)="row">
-                    {{row.item.status == 'WAIT' ? '처리대기' : ''}}
-                    {{row.item.status == 'ING' ? '처리중' : ''}}
-                    {{row.item.status == 'CHECKED' ? '처리완료' : ''}}
-                </template>
                 <template #cell(email)="row">
                     {{row.item.email == null ? '-' : row.item.email}}
                 </template>
                 <template #cell(phone)="row">
                     {{row.item.phone == null ? '-' : phoneFomatter(row.item.phone)}}
                 </template>
+                <template #cell(role)="row">
+                    {{row.item.role == 'ADMIN' ? '관리자' : ''}}
+                    {{row.item.role == 'SUPER' ? '최종관리자' : ''}}
+                    <!-- {{ $store.state.serviceId == row.item.serviceId ? '(나)' : '' }} -->
+                </template>
+                <template #cell(second)="row">
+                    {{row.item.second ? '완료' : '미완료'}}
+                    <!-- {{row.item.second}} -->
+                </template>
                 <template #cell(leave)="row">
                     {{row.item.leave ? '비활성' : '활성'}}
-                    <!-- {{ $store.state.serviceId == row.item.serviceId ? '(나)' : '' }} -->
+                    <!-- {{row.item.leave}} -->
                 </template>
                 <template #cell(control)="row">
                     <b-button size="sm" class="mr-2" @click="leaveToggle(row)" v-if="$store.state.serviceId !== row.item.serviceId">
@@ -105,7 +111,7 @@ export default {
                 key: 'name',
                 label: '이름',
                 sortable: false,
-                thClass: 'w10',
+                thClass: 'w5',
                 filterByFormatted: true,
             },
             {
@@ -119,7 +125,7 @@ export default {
                 key: 'phone',
                 label: '연락처',
                 sortable: false,
-                thClass: 'w20',
+                thClass: 'w15',
                 filterByFormatted: true
             },
             {
@@ -131,6 +137,16 @@ export default {
                 //     if (value === 'SUPER') return 'table-danger'
                 //     if (value === 'ADMIN') return 'table-warning'
                 // },
+            },
+            {
+                key: 'second',
+                label: '비밀번호변경',
+                thClass: 'w10',
+                sortable: false,
+                filterByFormatted: true,
+                tdClass: (value) => {
+                    if (value) return 'table-danger'
+                },
             },
             {
                 key: 'leave',
@@ -145,7 +161,7 @@ export default {
             {
                 key: 'control',
                 label: '상태변경',
-                thClass: 'w30',
+                thClass: 'w10',
                 sortable: false,
                 filterByFormatted: true,
             },
@@ -177,7 +193,7 @@ export default {
             
             const { data } = await this.$axios.get("/admin/users/leave/"+row.item.id);
             console.log(data);
-            // console.log(row.item.leave);
+            console.log(row.item.leave);
             // console.log(this.userItems.leave);
             const h = this.$createElement
             const titleVNode = h('div', { domProps: { innerHTML: '회원상태 변경' } })
@@ -220,5 +236,8 @@ export default {
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+table {
+    border-top: 1px solid #dee2e6;
+}
 </style>

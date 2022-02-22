@@ -1,6 +1,6 @@
 <template>
   <validation-observer ref="observer" v-slot="{ handleSubmit }" v-if="show">
-        <b-form @submit.prevent="handleSubmit(changePwd)">
+        <b-form @submit.prevent="handleSubmit(changePwd)" class="pt-3 mt-4" :style="{borderTop: '3px dashed #000'}">
             <validation-provider
             name="현재 비밀번호"
             :rules="{ required: true }"
@@ -26,7 +26,7 @@
                 vid="password"
                 v-slot="validationContext"
             >
-                <b-form-group id="newPassword-input-group" label="새 비밀번호" label-for="newPassword-input">
+                <b-form-group id="newPassword-input-group" label="새 비밀번호" label-for="newPassword-input" class="mt-3">
                 <b-form-input
                     id="newPassword-input"
                     name="newPassword-input"
@@ -45,7 +45,7 @@
                 name="새 비밀번호 확인"
                 v-slot="validationContext"
             >
-                <b-form-group id="newPassword2-input-group" label="새 비밀번호 확인" label-for="newPassword2-input">
+                <b-form-group id="newPassword2-input-group" label="새 비밀번호 확인" label-for="newPassword2-input" class="mt-3">
                 <b-form-input
                     id="newPassword2-input"
                     name="newPassword2-input"
@@ -59,8 +59,11 @@
                 </b-form-group>
             </validation-provider>
 
-            <b-button type="submit" variant="primary">비밀번호 변경</b-button>
-            {{input}}
+            <!-- <b-button type="submit" variant="primary">비밀번호 변경</b-button> -->
+            <b-button type="submit" class="mt-4" pill block :style="{background:'#FDDA00',border:'3px solid #000'}">
+                <span class="text-20 px-4 fw-900" :style="{color:'#000'}">재설정</span>
+            </b-button>
+            <!-- {{input}} -->
         </b-form>
   </validation-observer>
 </template>
@@ -95,6 +98,8 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
+                    footerBgVariant:"white",
+                    titleClass: "fw-900"
                 }).then(() => {
                     Object.assign(this.$data, this.$options.data());
                     this.$refs.observer.reset();
@@ -109,7 +114,9 @@ export default {
                     centered: true,
                     okTitle: '확인',
                     footerClass: 'p-2',
-                    noCloseOnBackdrop: true
+                    noCloseOnBackdrop: true,
+                    footerBgVariant:"white",
+                    titleClass: "fw-900"
                 }).then(() => {
                     Object.assign(this.$data, this.$options.data());
                     this.$refs.observer.reset();

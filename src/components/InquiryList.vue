@@ -9,38 +9,33 @@
         <!-- <p>{{inquiryItems[2].user.serviceId === null ? 'ㄴㄴㄴㄴ' : inquiryItems[2].user.serviceId}}</p> -->
         
         <b-container>
-            <h1>상담 리스트</h1>
-            정렬: 
-            <b-form-select
-            v-model="filter" class="p-1">
-                <b-form-select-option value="">전체</b-form-select-option>
-                <b-form-select-option value="WAIT">처리대기</b-form-select-option>
-                <b-form-select-option value="ING">처리중</b-form-select-option>
-                <b-form-select-option value="CHECKED">처리완료</b-form-select-option>
-            </b-form-select>
-            <!-- <b-form-group
-            label="Filter"
-            label-for="filter-input"
-            label-cols-sm="3"
-            label-align-sm="right"
-            label-size="sm"
-            class="mb-0"
-            >
-            <b-input-group size="sm">
-                <b-form-input
-                id="filter-input"
-                v-model="filter"
-                type="search"
-                placeholder="Type to Search"
-                ></b-form-input>
+            <b-row class="yellow-wrap title mb-4">
+                <p class="text-30 fw-900 m-0">상담관리</p>
+            </b-row>
+            <b-form-group v-slot="{ ariaDescribedby }">
+                <b-form-select
+                :aria-describedby="ariaDescribedby"
+                v-model="filter" class="p-1">
+                    <b-form-select-option value="">전체</b-form-select-option>
+                    <b-form-select-option value="WAIT">처리대기</b-form-select-option>
+                    <b-form-select-option value="ING">처리중</b-form-select-option>
+                    <b-form-select-option value="CHECKED">처리완료</b-form-select-option>
+                </b-form-select>
+                <!-- <b-input-group size="sm">
+                    <b-form-input
+                    id="filter-input"
+                    v-model="filter"
+                    type="search"
+                    placeholder="Type to Search"
+                    ></b-form-input>
 
-                <b-input-group-append>
-                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                </b-input-group-append>
-            </b-input-group>
-            </b-form-group> -->
+                    <b-input-group-append>
+                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                    </b-input-group-append>
+                </b-input-group> -->
+            </b-form-group>
 
-            <b-table caption-top class="text-center" head-row-variant="light" no-border-collapse
+            <b-table caption-top class="text-center" head-row-variant="light" no-border-collapse hover
             :items="inquiryItems" :fields="fields"
             :current-page="currentPage"
             :per-page="perPage"
@@ -49,12 +44,15 @@
             @filtered="onFiltered">
                 <!-- <template #table-caption>This is a table caption at the top.</template> -->
                 <template #cell(status)="row">
-                    {{row.item.status == 'WAIT' ? '처리대기' : ''}}
-                    {{row.item.status == 'ING' ? '처리중' : ''}}
-                    {{row.item.status == 'CHECKED' ? '처리완료' : ''}}
+                    <span class="status text-white px-3 py-1">
+                        {{row.item.status == 'WAIT' ? '처리대기' : ''}}
+                        {{row.item.status == 'ING' ? '처리중' : ''}}
+                        {{row.item.status == 'CHECKED' ? '처리완료' : ''}}
+                    </span>
                 </template>
                 <template #cell(user)="row">
-                    {{row.item.user == null ? '-' : row.item.user.serviceId}}
+                    <!-- {{row.item.user == null ? '-' : row.item.user.serviceId}} -->
+                    {{row.item.user == null ? '-' : row.item.user.name}}
                 </template>
                 <template #cell(phone)="row">
                     <!-- {{ row.item.phone }} -->
@@ -64,9 +62,13 @@
                     {{row.item.phone.length == 9 ? row.item.phone.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3") : '' }} -->
                 </template>
                 <template #cell(details)="row">
-                    <b-button size="sm" class="mr-2"
-                    @click="$router.push(`/admin/inquiryList/${row.item.id}`)">
-                        관리
+                    <b-button size="sm" pill :style="{width:'2.5rem',height:'2.5rem'}" variant="outline-dark" @click="$router.push(`/admin/inquiryList/${row.item.id}`)">
+                        <!-- 관리 -->
+                        <div class="d-flex justify-content-center" :style="{gap: '10px', transform:'scale(.3)'}">
+                            <font-awesome-icon icon="circle" />
+                            <font-awesome-icon icon="circle"  />
+                            <font-awesome-icon icon="circle"  />
+                        </div>
                     </b-button>
                 </template>
             </b-table>
@@ -90,20 +92,20 @@ export default {
                 key: 'id',
                 label: '순번',
                 sortable: true,
-                thClass: 'w10',
+                thClass: 'w5',
             },
             {
                 key: 'name',
                 label: '이름',
                 sortable: false,
-                thClass: 'w20',
+                thClass: 'w10',
                 filterByFormatted: true,
             },
             {
                 key: 'phone',
                 label: '연락처',
                 sortable: false,
-                thClass: 'w20',
+                thClass: 'w15',
                 filterByFormatted: true
             },
             {
@@ -111,10 +113,10 @@ export default {
                 label: '상태',
                 sortable: false,
                 thClass: 'w10',
-                tdClass: (value) => {
-                    if (value === 'WAIT') return 'table-danger'
-                    if (value === 'ING') return 'table-warning'
-                    if (value === 'CHECKED') return 'table-success'
+                tdClass(value) {
+                    if (value === 'WAIT') return 'wait'
+                    if (value === 'ING') return 'ing'
+                    if (value === 'CHECKED') return 'checked'
                 },
             },
             {
@@ -131,8 +133,8 @@ export default {
             // },
             {
                 key: 'details',
-                label: '상세보기',
-                thClass: 'w10',
+                label: '',
+                thClass: 'w5',
                 sortable: false,
             },
         ],
@@ -183,5 +185,6 @@ export default {
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 </style>

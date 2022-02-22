@@ -13,8 +13,9 @@
                             ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
                         </b-col>
                         <b-col class="text-right">
-                            <span class="text-muted">처리자 </span>
-                            <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
+                            <span class="text-muted">처리자: </span>
+                            <!-- <font-awesome-icon icon="user" class="fa-xs" /> -->
+                            {{ item.user == null ? '-' : item.user.name}}
                         </b-col>
                     </b-row>
                     <b-card no-body v-model="item">
@@ -88,10 +89,10 @@
                     >
                         <template #header>
                             <b-row class="align-items-center">
-                                <b-col>
-                                    <font-awesome-icon icon="user" />
+                                <!-- <b-col>
+                                    <font-awesome-icon icon="user" class="fa-xs" />
                                     {{ $store.state.serviceId }}
-                                </b-col>
+                                </b-col> -->
                                 <b-col class="text-right">
                                     <b-btn size="sm" @click="addComment()">저장</b-btn>
                                 </b-col>
@@ -136,10 +137,11 @@
                         >
                             <template #header>
                                 <b-row class="align-items-center">
-                                    {{list.id}}
+                                    <!-- {{list.id}} -->
                                     <b-col>
-                                        <span class="text-muted">기록자 </span>
-                                        <font-awesome-icon icon="user" /> {{list.user.serviceId}}
+                                        <!-- <span class="text-muted">기록자 </span> -->
+                                        <!-- <font-awesome-icon icon="user" class="fa-xs" /> -->
+                                        {{list.user.name}}
                                     </b-col>
                                     <!-- <b-col class="text-right">
                                         <span class="text-muted">작성일시</span>

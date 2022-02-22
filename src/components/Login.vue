@@ -1,48 +1,52 @@
 <template>
     <main>
         <b-container class="w-25">
-            <h1>로그인</h1>
-            <validation-observer ref="observer" v-slot="{ handleSubmit }">
-                <b-form @submit.prevent="handleSubmit(login)">
-                    <validation-provider
-                    name="아이디"
-                    :rules="{ required: true }"
-                    v-slot="validationContext"
-                    >
-                        <b-form-group id="serviceId-input-group" label="아이디" label-for="serviceId-input">
-                            <b-form-input
-                            id="serviceId-input"
-                            name="serviceId-input"
-                            v-model="input.serviceId"
-                            placeholder="아이디를 입력하세요."
-                            :state="getValidationState(validationContext)"
-                            aria-describedby="serviceId-input-feedback"
-                            ></b-form-input>
-                            <b-form-invalid-feedback id="serviceId-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                        </b-form-group>
-                    </validation-provider>
-                    <validation-provider
-                    name="비밀번호"
-                    :rules="{ required: true }"
-                    v-slot="validationContext"
-                    >
-                        <b-form-group id="password-input-group" label="비밀번호" label-for="password-input">
-                            <b-form-input
-                            id="password-input"
-                            name="password-input"
-                            v-model="input.password"
-                            type="password"
-                            placeholder="비밀번호를 입력하세요."
-                            :state="getValidationState(validationContext)"
-                            aria-describedby="password-input-feedback"
-                            ></b-form-input>
-                            <b-form-invalid-feedback id="password-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                        </b-form-group>
-                    </validation-provider>
+            <b-row class="yellow-wrap">
+                <p class="text-30 fw-900 mb-4">로그인</p>
+                <validation-observer ref="observer" v-slot="{ handleSubmit }">
+                    <b-form @submit.prevent="handleSubmit(login)">
+                        <validation-provider
+                        name="아이디"
+                        :rules="{ required: true }"
+                        v-slot="validationContext"
+                        >
+                            <b-form-group id="serviceId-input-group" label="아이디" label-for="serviceId-input">
+                                <b-form-input
+                                id="serviceId-input"
+                                name="serviceId-input"
+                                v-model="input.serviceId"
+                                placeholder="아이디를 입력하세요."
+                                :state="getValidationState(validationContext)"
+                                aria-describedby="serviceId-input-feedback"
+                                ></b-form-input>
+                                <b-form-invalid-feedback id="serviceId-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                            </b-form-group>
+                        </validation-provider>
+                        <validation-provider
+                        name="비밀번호"
+                        :rules="{ required: true }"
+                        v-slot="validationContext"
+                        >
+                            <b-form-group id="password-input-group" label="비밀번호" label-for="password-input" class="mt-3">
+                                <b-form-input
+                                id="password-input"
+                                name="password-input"
+                                v-model="input.password"
+                                type="password"
+                                placeholder="비밀번호를 입력하세요."
+                                :state="getValidationState(validationContext)"
+                                aria-describedby="password-input-feedback"
+                                ></b-form-input>
+                                <b-form-invalid-feedback id="password-input-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                            </b-form-group>
+                        </validation-provider>
 
-                    <b-button type="submit" variant="primary">로그인</b-button>
-                </b-form>
-            </validation-observer>
+                        <b-button class="mt-5 w-100" type="submit" pill block :style="{background:'#FDDA00',border:'3px solid #000'}">
+                            <span class="text-20 px-4 fw-900" :style="{color:'#000'}">로그인</span>
+                        </b-button>
+                    </b-form>
+                </validation-observer>
+            </b-row>
         </b-container>
     </main>
 </template>
@@ -87,7 +91,9 @@ export default {
                         centered: true,
                         okTitle: '확인',
                         footerClass: 'p-2',
-                        noCloseOnBackdrop: true
+                        noCloseOnBackdrop: true,
+                        footerBgVariant:"white",
+                        titleClass: "fw-900"
                     })
                 } else if (data.code === "1005") {
                     // console.log(data.code)
@@ -99,7 +105,9 @@ export default {
                         centered: true,
                         okTitle: '확인',
                         footerClass: 'p-2',
-                        noCloseOnBackdrop: true
+                        noCloseOnBackdrop: true,
+                        footerBgVariant:"white",
+                        titleClass: "fw-900"
                     })
                 } else if (data.code === "4041") {
                     // console.log(data.code)
@@ -111,7 +119,9 @@ export default {
                         centered: true,
                         okTitle: '확인',
                         footerClass: 'p-2',
-                        noCloseOnBackdrop: true
+                        noCloseOnBackdrop: true,
+                        footerBgVariant:"white",
+                        titleClass: "fw-900"
                     })
                 } 
         },

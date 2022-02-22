@@ -3,8 +3,8 @@
         <b-container>
             <b-row class="align-items-center mb-4">
                 <b-col class="footer-btns">
-                    <b-btn v-b-modal.modal1 variant="link">개인정보취급방침</b-btn>
-                    <b-btn v-b-modal.modal1 variant="link">이용동의</b-btn>
+                    <b-btn v-b-modal.check1 variant="link">개인정보취급방침</b-btn>
+                    <b-btn v-b-modal.check2 variant="link">이용동의</b-btn>
                     <b-btn variant="link">등록업체조회</b-btn>
                 </b-col>
             </b-row>

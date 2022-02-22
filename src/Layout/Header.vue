@@ -12,20 +12,23 @@
                             <b-col>
                                 <b-nav class="justify-content-center">
                                     <b-nav-item to="/admin/inquiryList"
-                                    :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담리스트</b-nav-item>
+                                    :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담관리</b-nav-item>
                                     <b-nav-item to="/admin/userList" v-if="$store.getters.isSuper"
                                     :class="path.includes('/admin/user') ? 'active' : ''">계정관리</b-nav-item>
                                     <b-nav-item to="/admin/myAccount"
-                                    :class="path.includes('/admin/myAccount') ? 'active' : ''">내 정보관리</b-nav-item>
+                                    :class="path.includes('/admin/myAccount') ? 'active' : ''">내 정보수정</b-nav-item>
                                 </b-nav>
                             </b-col>
                             <b-col>
                                 <span class="mx-2">
-                                    <font-awesome-icon icon="user" />
+                                    <!-- <font-awesome-icon icon="user" class="fa-xs" /> -->
+                                    ID: 
                                     {{ $store.state.serviceId }}
                                 </span>
-                                <b-btn @click="logout()" pill class="text-warning bg-white text-14 border-0">
-                                로그아웃
+                                <b-btn @click="logout()" pill class="logout-btn decoration-0" variant="link">
+                                    <span>
+                                        로그아웃
+                                    </span>
                                 </b-btn>
                             </b-col>
                         </b-row>
@@ -74,24 +77,32 @@ export default {
 <style lang="scss" scoped>
 .nav-item {
     &.active {
-        color: #fff;
+        color: #000;
         font-weight: 900;
         &::after {
             content:'';
             width: 80%;
             height: 2px;
             display: block;
-            background: #fff;
+            background: #000;
             position: relative;
             left: 50%; top: -5px;
             transform: translateX(-50%);
         }
     }
     .nav-link {
-        color: #fff;
+        color: #000;
         &:hover, &:active {
-            color: #fff;
+            color: #000;
         }
+    }
+}
+.logout-btn {
+    background: #FFDF14;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0 0 #000;
+    span {
+        color: #000;
     }
 }
 </style>
