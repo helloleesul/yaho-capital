@@ -1,28 +1,27 @@
 <template>
     <main>
         <b-container>
+            <b-row class="yellow-wrap title mb-5">
+                <p class="text-30 fw-900 m-0">상담신청 상세</p>
+            </b-row>
             <!-- {{item}} -->
             <!-- {{item.comments}} -->
             <b-row class="align-items-start justify-content-between">
                 <!-- 상담신청 상세 -->
-                <b-col :style="{marginRight:'3rem'}">
+                <b-col class="me-5">
                     <b-row class="mb-3 align-items-center">
                         <b-col>
-                            <b-btn
-                            @click="$router.go(-1)"
-                            ><font-awesome-icon icon="bars" /> 목록으로</b-btn>
+                            <b-btn @click="$router.go(-1)" variant="dark fw-900 text-17">
+                                <font-awesome-icon icon="arrow-left" />
+                                <span class="ms-2">이전으로</span>
+                            </b-btn>
                         </b-col>
-                        <b-col class="text-right">
-                            <span class="text-muted">처리자: </span>
-                            <!-- <font-awesome-icon icon="user" class="fa-xs" /> -->
-                            {{ item.user == null ? '-' : item.user.name}}
-                        </b-col>
+                        <!-- <b-col class="text-right fw-900 text-17">
+                            <span :style="{borderRadius: '2rem'}">최종처리자</span>
+                            <span class="ms-2 yellow-underline py-2">{{ item.user == null ? '-' : item.user.name}}</span>
+                        </b-col> -->
                     </b-row>
                     <b-card no-body v-model="item">
-                        <template #header>
-                            <span class="text-muted">상담신청 상세</span>
-                        </template>
-
                         <b-list-group flush>
                             <b-list-group-item>
                                 <span class="text-muted">이름</span>
@@ -36,28 +35,27 @@
                                     {{ phoneFomatter(itemPhone) }}
                                 </b-card-text>
                             </b-list-group-item>
+                            <b-list-group-item>
+                                <span class="text-muted">상담내용</span>
+                                <b-card-text>
+                                    <span v-if="!item.content" :style="{opacity:'.2'}">상담내용이 없습니다.</span>
+                                    <span v-else>{{item.content}}</span>
+                                </b-card-text>
+                            </b-list-group-item>
                         </b-list-group>
 
-                        <b-card-body>
-                            <span class="text-muted">상담신청 내용</span>
-                            <b-card-text>
-                                <span v-if="!item.content" class="text-danger">상담내용이 없습니다.</span>
-                                <span v-else>{{item.content}}</span>
-                            </b-card-text>
-                        </b-card-body>
-
-                        <b-card-footer>
+                        <template #footer>
                             <b-row class="align-items-center">
-                                <b-col class="text-right">
+                                <b-col>
                                     <span class="text-muted">신청일시</span>
                                     {{ $moment(item.createDate).format('YYYY-MM-DD hh:mm a') }}
                                 </b-col>
-                                <!-- <b-col class="text-right">
-                                    <span class="text-muted">처리자</span>
-                                    <font-awesome-icon icon="user" /> {{ item.user == null ? '-' : item.user.serviceId}}
-                                </b-col> -->
+                                <b-col class="text-right fw-900 text-17">
+                                    <span :style="{borderRadius: '2rem'}">최종처리자</span>
+                                    <span class="ms-2 yellow-underline py-2">{{ item.user == null ? '-' : item.user.name}}</span>
+                                </b-col>
                             </b-row>
-                        </b-card-footer>
+                        </template>
                     </b-card>
                 </b-col>
 
@@ -87,17 +85,16 @@
                     class="mb-3"
                     v-if="newCommentShow"
                     >
-                        <template #header>
+                        <!-- <template #header>
                             <b-row class="align-items-center">
-                                <!-- <b-col>
-                                    <font-awesome-icon icon="user" class="fa-xs" />
+                                <b-col>
                                     {{ $store.state.serviceId }}
-                                </b-col> -->
+                                </b-col>
                                 <b-col class="text-right">
                                     <b-btn size="sm" @click="addComment()">저장</b-btn>
                                 </b-col>
                             </b-row>
-                        </template>
+                        </template> -->
 
                         <b-card-body>
                             <b-form-textarea
@@ -108,6 +105,7 @@
                             v-model="newCommentContent"
                             ref="commentInput"
                             ></b-form-textarea>
+                            <b-btn size="sm" @click="addComment()">저장</b-btn>
                         </b-card-body>
 
                         <!-- <b-card-footer>
@@ -120,11 +118,12 @@
                     </b-card>
 
                     <!-- 기록 없을 때 -->
-                    <b-card v-if="item.comments === null || !item.comments.length"
+                    <!-- <b-card v-if="item.comments === null || !item.comments.length" -->
+                    <b-card v-if="item.comments && item.comments.length < 1 || item.comments === null"
                     border-variant="warning"
                     text-variant="warning"
                     align="center">
-                        <b-card-text>작성된 기록이 없습니다.</b-card-text>
+                        <b-card-text class="m-0">작성된 기록이 없습니다.</b-card-text>
                     </b-card>
 
                     <!-- 기록 -->
@@ -431,5 +430,13 @@ export default {
         &::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
         }
+    }
+    .card-text {
+        font-weight: 900;
+        margin-top: .5rem;
+        font-size: 20px;
+    }
+    .text-muted {
+        font-size: 17px;
     }
 </style>

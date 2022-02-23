@@ -67,7 +67,6 @@ new Vue({
     if (userString2) {
       const userData2 = JSON.parse(userString2);
       this.$store.dispatch('setToken', userData2);
-      this.$store.dispatch('logoutTimer')
     }
     const userString3 = localStorage.getItem('serviceId');
     if (userString3) {

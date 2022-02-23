@@ -60,8 +60,8 @@
             <b-col class="col-7">
               <ol class="p-0 m-0">
                 <li v-for="(step, index) in steps" :key="step.index" class="mb-4 d-flex align-items-center">
-                  <div class="text-center text-18" 
-                  :style="{background:'#E4E4E6',width:'5rem',height:'5rem',paddingTop:'1rem',borderRadius:'100%', marginRight:'2rem'}">
+                  <div class="text-center text-18 me-4" 
+                  :style="{background:'#E4E4E6',width:'5rem',height:'5rem',paddingTop:'1rem',borderRadius:'100%'}">
                     <span class="fw-900">{{index + 1}}</span><p class="m-0" :style="{lineHeight:'1'}">step</p>
                   </div>
                   <div>

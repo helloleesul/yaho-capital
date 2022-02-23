@@ -12,17 +12,17 @@
                             <b-col>
                                 <b-nav class="justify-content-center">
                                     <b-nav-item to="/admin/inquiryList"
-                                    :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담관리</b-nav-item>
+                                    :class="path.includes('/admin/inquiryList') ? 'active' : ''">상담신청 관리</b-nav-item>
                                     <b-nav-item to="/admin/userList" v-if="$store.getters.isSuper"
-                                    :class="path.includes('/admin/user') ? 'active' : ''">계정관리</b-nav-item>
+                                    :class="path.includes('/admin/user') ? 'active' : ''">계정 관리</b-nav-item>
                                     <b-nav-item to="/admin/myAccount"
                                     :class="path.includes('/admin/myAccount') ? 'active' : ''">내 정보수정</b-nav-item>
                                 </b-nav>
                             </b-col>
                             <b-col>
                                 <span class="mx-2">
-                                    <!-- <font-awesome-icon icon="user" class="fa-xs" /> -->
-                                    ID: 
+                                    <font-awesome-icon icon="user" class="fa-xs" />
+                                    <!-- ID:  -->
                                     {{ $store.state.serviceId }}
                                 </span>
                                 <b-btn @click="logout()" pill class="logout-btn decoration-0" variant="link">

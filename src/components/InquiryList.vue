@@ -9,18 +9,20 @@
         <!-- <p>{{inquiryItems[2].user.serviceId === null ? 'ㄴㄴㄴㄴ' : inquiryItems[2].user.serviceId}}</p> -->
         
         <b-container>
-            <b-row class="yellow-wrap title mb-4">
-                <p class="text-30 fw-900 m-0">상담관리</p>
+            <b-row class="yellow-wrap title mb-5">
+                <p class="text-30 fw-900 m-0">상담신청 목록</p>
             </b-row>
-            <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-group v-slot="{ ariaDescribedby }" class="mb-3 text-right">
                 <b-form-select
+                class="mx-2"
                 :aria-describedby="ariaDescribedby"
-                v-model="filter" class="p-1">
+                v-model="filter">
                     <b-form-select-option value="">전체</b-form-select-option>
                     <b-form-select-option value="WAIT">처리대기</b-form-select-option>
                     <b-form-select-option value="ING">처리중</b-form-select-option>
                     <b-form-select-option value="CHECKED">처리완료</b-form-select-option>
                 </b-form-select>
+                <b-btn @click="filter = ''" :disabled="!filter" variant="outline-dark">초기화</b-btn>
                 <!-- <b-input-group size="sm">
                     <b-form-input
                     id="filter-input"
@@ -63,11 +65,13 @@
                 </template>
                 <template #cell(details)="row">
                     <b-button size="sm" pill :style="{width:'2.5rem',height:'2.5rem'}" variant="outline-dark" @click="$router.push(`/admin/inquiryList/${row.item.id}`)">
-                        <!-- 관리 -->
-                        <div class="d-flex justify-content-center" :style="{gap: '10px', transform:'scale(.3)'}">
+                        <!-- <div class="d-flex justify-content-center" :style="{gap: '10px', transform:'scale(.3)'}">
                             <font-awesome-icon icon="circle" />
                             <font-awesome-icon icon="circle"  />
                             <font-awesome-icon icon="circle"  />
+                        </div> -->
+                        <div class="d-flex justify-content-center">
+                            <font-awesome-icon icon="arrow-right" class="fa-lg" />
                         </div>
                     </b-button>
                 </template>
@@ -121,7 +125,7 @@ export default {
             },
             {
                 key: 'user',
-                label: '처리자',
+                label: '최종처리자',
                 thClass: 'w10',
                 sortable: false,
                 filterByFormatted: true,

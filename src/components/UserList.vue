@@ -9,43 +9,35 @@
         <!-- <p>{{userItems[2].user.serviceId === null ? 'ㄴㄴㄴㄴ' : userItems[2].user.serviceId}}</p> -->
         
         <b-container>
-            <b-row class="yellow-wrap title mb-4">
-                <p class="text-30 fw-900 m-0">계정관리</p>
+            <b-row class="yellow-wrap title mb-5">
+                <p class="text-30 fw-900 m-0">계정 목록</p>
             </b-row>
-            정렬: 
-            <b-form-select
-            v-model="filter" class="p-1">
-                <b-form-select-option value="">전체</b-form-select-option>
-                <b-form-select-option value="false">활성 false</b-form-select-option>
-                <b-form-select-option value="true">비활성 true</b-form-select-option>
-            </b-form-select>
-            <b-button size="sm" class="mr-2"
-            @click="$router.push('/admin/userCreate')">
-                계정 생성
-            </b-button>
-            <!-- <b-form-group
-            label="Filter"
-            label-for="filter-input"
-            label-cols-sm="3"
-            label-align-sm="right"
-            label-size="sm"
-            class="mb-0"
-            >
-            <b-input-group size="sm">
-                <b-form-input
-                id="filter-input"
-                v-model="filter"
-                type="search"
-                placeholder="Type to Search"
-                ></b-form-input>
+            <b-row class="mb-3">
+                <b-col>
+                    <b-btn @click="$router.push('/admin/userCreate')" pill block :style="{background:'#FDDA00', border:'3px solid #000'}">
+                        <span class="text-18 px-2 fw-900" :style="{color:'#000'}">새 계정 추가</span>
+                    </b-btn>
+                </b-col>
+                <b-col class="col-3">
+                    <b-form-group v-slot="{ ariaDescribedby }">
+                        <b-input-group>
+                            <b-form-input
+                            class="mx-2"
+                            id="filter-input"
+                            v-model="filter"
+                            :aria-describedby="ariaDescribedby"
+                            type="search"
+                            placeholder="검색어를 입력하세요."
+                            ></b-form-input>
+                            <b-input-group-append>
+                                <b-btn @click="filter = ''" :disabled="!filter" variant="outline-dark">초기화</b-btn>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                </b-col>
+            </b-row>
 
-                <b-input-group-append>
-                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                </b-input-group-append>
-            </b-input-group>
-            </b-form-group> -->
-
-            <b-table caption-top class="text-center" head-row-variant="light" no-border-collapse
+            <b-table caption-top class="text-center" head-row-variant="light" no-border-collapse hover
             :items="userItems" :fields="fields"
             :current-page="currentPage"
             :per-page="perPage"
@@ -54,10 +46,10 @@
             @filtered="onFiltered">
                 <!-- <template #table-caption>This is a table caption at the top.</template> -->
                 <template #cell(email)="row">
-                    {{row.item.email == null ? '-' : row.item.email}}
+                    {{row.item.email == null || !row.item.email ? '-' : row.item.email}}
                 </template>
                 <template #cell(phone)="row">
-                    {{row.item.phone == null ? '-' : phoneFomatter(row.item.phone)}}
+                    {{row.item.phone == null || !row.item.phone ? '-' : phoneFomatter(row.item.phone)}}
                 </template>
                 <template #cell(role)="row">
                     {{row.item.role == 'ADMIN' ? '관리자' : ''}}
@@ -65,17 +57,27 @@
                     <!-- {{ $store.state.serviceId == row.item.serviceId ? '(나)' : '' }} -->
                 </template>
                 <template #cell(second)="row">
-                    {{row.item.second ? '완료' : '미완료'}}
+                    <span class="status text-white px-3 py-1">
+                        {{row.item.second ? '완료' : '미완료'}}
+                    </span>
                     <!-- {{row.item.second}} -->
                 </template>
                 <template #cell(leave)="row">
-                    {{row.item.leave ? '비활성' : '활성'}}
+                    <span class="status text-white px-3 py-1">
+                        {{row.item.leave ? '비활성' : '활성'}}
+                    </span>
                     <!-- {{row.item.leave}} -->
                 </template>
                 <template #cell(control)="row">
-                    <b-button size="sm" class="mr-2" @click="leaveToggle(row)" v-if="$store.state.serviceId !== row.item.serviceId">
-                        {{row.item.leave ? '활성' : '비활성'}}
+                    <b-button size="sm" pill :style="{width:'2.5rem',height:'2.5rem'}" variant="outline-dark"
+                    @click="leaveToggle(row)" v-if="$store.state.serviceId !== row.item.serviceId">
+                        <div class="d-flex justify-content-center">
+                            <font-awesome-icon icon="sync-alt" class="fa-lg" />
+                        </div>
                     </b-button>
+                    <!-- <b-button size="sm" class="mr-2" @click="leaveToggle(row)" v-if="$store.state.serviceId !== row.item.serviceId">
+                        {{row.item.leave ? '활성' : '비활성'}}
+                    </b-button> -->
                 </template>
             </b-table>
             <b-pagination
@@ -144,8 +146,9 @@ export default {
                 thClass: 'w10',
                 sortable: false,
                 filterByFormatted: true,
-                tdClass: (value) => {
-                    if (value) return 'table-danger'
+                tdClass(value) {
+                    if (value) return 'checked'
+                    if (!value) return 'wait'
                 },
             },
             {
@@ -154,8 +157,9 @@ export default {
                 thClass: 'w10',
                 sortable: false,
                 filterByFormatted: true,
-                tdClass: (value) => {
-                    if (value) return 'table-danger'
+                tdClass(value) {
+                    if (value) return 'checked'
+                    if (!value) return 'ing'
                 },
             },
             {
