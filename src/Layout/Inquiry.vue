@@ -50,8 +50,6 @@
                         id="contents-input"
                         v-model="input.content" 
                         placeholder="상담내용을 간단히 입력하세요."
-                        max-rows="2"
-                        no-resize
                         ></b-form-textarea>
                     </b-form-group>
                 </validation-provider>
