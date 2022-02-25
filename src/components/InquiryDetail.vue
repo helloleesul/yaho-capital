@@ -116,6 +116,7 @@
                         <b-card
                         no-body
                         class="mb-3"
+                        :class="{'active': list.edit}"
                         v-for="(list, index) in item.comments"
                         :key="list.id"
                         >
@@ -151,15 +152,17 @@
                                         <span class="text-muted">작성일시</span>
                                         {{ $moment(list.createDate).format('YYYY-MM-DD hh:mm a') }}
                                     </b-col> -->
+                                    <!-- {{list}} -->
                                     <!-- {{list.edit}} -->
+                                    <!-- {{list.disable}} -->
                                     <b-col class="text-right" v-if="$store.state.serviceId == list.user.serviceId">
                                         <div v-if="list.edit">
                                             <b-btn  size="sm" class="me-2" variant="outline-dark" @click="updateCommentCheck(list.content, list)">저장</b-btn>
                                             <b-btn  size="sm" variant="outline-danger" @click="getInquiryDetail()">취소</b-btn>
                                         </div>
                                         <div v-else>
-                                            <b-btn size="sm" class="me-2" variant="outline-dark" @click="editBtn(index)">수정</b-btn>
-                                            <b-btn size="sm" variant="outline-danger" @click="delCommentCheck(list)">삭제</b-btn>
+                                            <b-btn size="sm" class="me-2" variant="outline-dark" :disabled="list.disable" @click="editBtn(index)">수정</b-btn>
+                                            <b-btn size="sm" variant="outline-danger" :disabled="list.disable" @click="delCommentCheck(list)">삭제</b-btn>
                                         </div>
                                     </b-col>
                                 </b-row>
@@ -169,11 +172,14 @@
                 </b-col>
             </b-row>
         </b-container>
+        <Alert :okVariant="okVariant" :title="title" :body="body" @okClick="okClick()" />
     </main>
 </template>
 
 <script>
+import Alert from './Alert.vue';
 export default {
+    components: { Alert },
     data() {
       return {
         statusOptions: [
@@ -188,18 +194,26 @@ export default {
         },
         itemPhone: null,
         newCommentContent: null,
+
+        okVariant: null,
+        title: null,
+        body: null,
       }
     },
     computed: {
         id() {
             return this.$route.params.id;
         },
+        commentSet() {
+            return  this.item.comments.forEach(function(el) {
+                    console.log('commentSet', el);
+                    this.$set(el, 'edit', false);
+                    this.$set(el, 'disable', false);
+            }, this)
+        },
     },
     mounted() {
         this.getInquiryDetail();
-    },
-    created() {
-        
     },
     methods: {
         // 리스트 불러오기
@@ -211,10 +225,7 @@ export default {
             this.itemPhone = data.data.phone;
 
             if (this.item.comments !== null) {
-                this.item.comments.forEach(function(el) {
-                    // console.log(el)
-                    this.$set(el, 'edit', false)
-                }, this)
+                this.commentSet;
             }
         },
         // 처리상태 변경
@@ -222,39 +233,36 @@ export default {
             await this.$axios.put("/admin/inquiry/"+this.id, {
                 status: this.item.status
             });
-            this.getInquiryDetail()
+            this.getInquiryDetail();
         },
-        async updateCommentCheck(text, list){
+
+        updateCommentCheck(text, list){
             const blank_pattern = /^\s+|\s+$/g;
             if(text == "" || text == undefined) {
                 // console.log(text)
                 // console.log('입력하세요.')
                 this.$refs.commentInput2[0].focus()
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
             } else if( text.replace( blank_pattern, '' ) == "" ) {
                 // console.log('공백입니다.')
+                list.content = null
                 this.$refs.commentInput2[0].focus()
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                }).then(() => {
-                    list.content = null
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
+                // this.okClick(alert('dd'));
+                // this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
+                //     title: '내용 입력',
+                //     size: 'sm',
+                //     buttonSize: 'sm',
+                //     okVariant: 'danger',
+                //     centered: true,
+                //     okTitle: '확인',
+                //     footerClass: 'p-2',
+                //     noCloseOnBackdrop: true,
+                //     footerBgVariant:"white",
+                //     titleClass: "fw-900"
+                // }).then(() => {
+                //     list.content = null
+                // })
             } else {
                 // console.log(text)
                 // console.log('입력되었습니다.')
@@ -277,8 +285,7 @@ export default {
                     okTitle: '확인',
                     footerClass: 'p-2',
                 }).then(() => {
-                    list.edit = false;
-                    this.getInquiryDetail()
+                   this.getInquiryDetail()
                 })
             } else if (data.code === "4001") {
                 this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
@@ -418,24 +425,18 @@ export default {
             console.log(data)
             this.getInquiryDetail()
         },
-        editBtn(index) { 
+        editBtn(index) {
             this.item.comments.forEach(function(el, idx) {
+                console.log( index, idx)
                 if ( index === idx ) {
-                    return el.edit = true
-                } else {
-                    el.edit = false
+                    el.edit = true;
+                    el.disable = false;
+                } 
+                else {
+                    el.edit = false;
+                    el.disable = true;
                 }
             }, this);
-            
-            // if ( list.edit === true ) {
-            //     list.edit = false;
-            // } else if (list.edit === false) {
-            //     list.edit = true;
-            // }
-
-            // this.getInquiryDetail()
-            // list.edit = true
-            // console.log(list, i)
         },
         phoneFomatter(num) {
             if (num?.length == 11) {
@@ -446,7 +447,16 @@ export default {
                 this.itemPhone = num.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
             } 
             return this.itemPhone;
-        }
+        },
+        alertModal(title, body, okVariant) {
+            this.title = title
+            this.body = body
+            this.okVariant = okVariant
+            this.$bvModal.show('alertModal')
+        }, 
+        // okClick(val) {
+        //     val
+        // }
     },
     watch: {
         'item.status'(newVal, oldval) {
@@ -503,6 +513,9 @@ export default {
         margin-top: .5rem;
         font-size: 20px;
     }
+    // .active {
+    //     // border-color: #000;
+    // }
     .text-muted {
         font-size: 17px;
     }
