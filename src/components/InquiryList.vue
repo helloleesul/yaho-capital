@@ -182,7 +182,7 @@ export default {
                 this.inquiryItems.phone = num.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
             } 
             return this.inquiryItems.phone;
-        }
+        },
     },
     computed: {
     },

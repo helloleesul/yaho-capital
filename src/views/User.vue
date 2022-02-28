@@ -11,7 +11,7 @@ import Footer from '../Layout/Footer.vue'
 import Header from '../Layout/Header.vue'
 
 export default {
-  name: 'Site',
+  name: 'User',
   components: { Header, Footer },
 }
 </script>

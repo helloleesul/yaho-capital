@@ -53,9 +53,6 @@
 <script>
 export default {
     name: 'Header',
-    props: {
-        admin: {type: Boolean, default: false},
-    },
     data() {
         return {
             user: true,

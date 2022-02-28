@@ -89,12 +89,15 @@
                 </validation-observer>
             </b-row>
         </b-container>
+        <Alert :okVariant="okVariant" :title="title" :body="body" />
     </main>
 </template>
 
 <script>
+import Alert from './Alert.vue';
 export default {
     name: 'UserCreate',
+    components: { Alert },
     data() {
         return {
             input:{
@@ -103,44 +106,44 @@ export default {
                 email: null,
                 phone: null,
             },
+
+            okVariant: null,
+            title: null,
+            body: null,
+
+            idCheck: false
         }
     },
     methods: {
         async userCreate(){
-            const { data } = await this.$axios.post("/admin/users", this.input);
-            console.log(data)
-            // console.log(this.input)
-
-            if (data.code === "0000") {
-                this.$bvModal.msgBoxOk('회원 계정이 생성되었습니다.', {
-                    title: '회원 계정 생성',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'success',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    footerBgVariant:"white",
-                    titleClass: "fw-900"
-                }).then(() => {
-                    // console.log(value)
-                    Object.assign(this.$data, this.$options.data());
-                    this.$refs.observer.reset();
-                    this.$router.push('/admin/userList');
-                })
-            } else if (data.code === "1002") {
-                this.$bvModal.msgBoxOk('입력하신 아이디가 이미 존재합니다.', {
-                    title: '아이디 사용 불가',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true,
-                    footerBgVariant:"white",
-                    titleClass: "fw-900"
-                })
+            if (this.idCheck) {
+                const { data } = await this.$axios.post("/admin/users", this.input);
+                console.log(data)
+                // console.log(this.input)
+    
+                if (data.code === "0000") {
+                    // this.alertModal('회원 계정 생성','회원 계정이 생성되었습니다.','success')
+                    this.$bvModal.msgBoxOk('회원 계정이 생성되었습니다.', {
+                        title: '회원 계정 생성',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        centered: true,
+                        okTitle: '확인',
+                        footerClass: 'p-2',
+                        footerBgVariant:"white",
+                        titleClass: "fw-900"
+                    }).then(() => {
+                        Object.assign(this.$data, this.$options.data());
+                        this.$refs.observer.reset();
+                        this.$router.push('/admin/userList');
+                        // console.log(value)
+                    })
+                } else if (data.code === "1002") {
+                    this.alertModal('아이디 중복','입력하신 아이디가 이미 존재합니다.','danger')
+                }
+            } else {
+                this.alertModal('아이디 중복확인 필수','아이디 중복 여부를 확인하세요.','danger')
             }
         },
         async serviceIdCheck(){
@@ -151,49 +154,27 @@ export default {
             console.log(this.input.serviceId)
             if (data.code === "0000") {
                 if(this.input.serviceId) {
-                    this.$bvModal.msgBoxOk('사용 가능한 아이디입니다.', {
-                        title: '아이디 사용 가능',
-                        size: 'sm',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        centered: true,
-                        okTitle: '확인',
-                        footerClass: 'p-2',
-                        footerBgVariant:"white",
-                        titleClass: "fw-900"
-                    })
+                    this.alertModal('아이디 사용 가능','사용 가능한 아이디입니다.','success')
+                    this.idCheck = true;
                 } else {
-                    this.$bvModal.msgBoxOk('아이디 값을 입력하세요.', {
-                        title: '아이디 미입력',
-                        size: 'sm',
-                        buttonSize: 'sm',
-                        okVariant: 'danger',
-                        centered: true,
-                        okTitle: '확인',
-                        footerClass: 'p-2',
-                        noCloseOnBackdrop: true,
-                        footerBgVariant:"white",
-                        titleClass: "fw-900"
-                    })
+                    this.alertModal('아이디 미입력','아이디 값을 입력하세요.','danger')
+                    this.idCheck = false;
                 }
             } else if (data.code === "1002") {
-                this.$bvModal.msgBoxOk('입력하신 아이디가 이미 존재합니다.', {
-                    title: '아이디 중복',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true,
-                    footerBgVariant:"white",
-                    titleClass: "fw-900"
-                })
+                this.alertModal('아이디 중복','입력하신 아이디가 이미 존재합니다.','danger')
+                this.idCheck = false;
             }
         },
 
         getValidationState({ dirty, validated, valid = null }) {
             return dirty || validated ? valid : null;
+        },
+
+        alertModal(title, body, okVariant) {
+            this.title = title
+            this.body = body
+            this.okVariant = okVariant
+            this.$bvModal.show('alertModal')
         },
     },
 } 

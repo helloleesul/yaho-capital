@@ -53,7 +53,7 @@
                 </template>
                 <template #cell(role)="row">
                     {{row.item.role == 'ADMIN' ? '관리자' : ''}}
-                    {{row.item.role == 'SUPER' ? '최종관리자' : ''}}
+                    {{row.item.role == 'SUPER' ? '최고관리자' : ''}}
                     <!-- {{ $store.state.serviceId == row.item.serviceId ? '(나)' : '' }} -->
                 </template>
                 <template #cell(second)="row">
@@ -204,8 +204,8 @@ export default {
             const messageVNode = h('div', { class: ['foobar'] }, [
                 h('p', { class: ['mb-0'] }, [
                     h('strong', { class: ['fw-900'] }, row.item.name),
-                        '회원을 ',
-                    h('strong', { class: ['fw-900 text-danger'] }, row.item.leave ? '비활성':'활성'),
+                        '님을 ',
+                    h('strong', { class: ['fw-900 yellow-underline'] }, row.item.leave ? '비활성':'활성'),
                     '상태로 변경했습니다. ',
                 ]),
             ])
@@ -218,6 +218,9 @@ export default {
                 okTitle: '확인',
                 okVariant: 'success',
                 footerClass: 'p-2',
+                noCloseOnBackdrop: true,
+                titleClass: 'fw-900',
+                footerBgVariant: 'white'
             })
         },
         onFiltered(filteredItems) {
@@ -243,5 +246,8 @@ export default {
 <style lang="scss" scoped>
 table {
     border-top: 1px solid #dee2e6;
+}
+.yellow-underline::before {
+    bottom: 0;
 }
 </style>

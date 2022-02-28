@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Site from '../views/Site.vue'
-import Admin from '../views/Admin.vue'
+
+import User from '@/views/User.vue'
+import Admin from '@/views/Admin.vue'
+
+import ErrorPage from '@/components/ErrorPage.vue'
 
 Vue.use(VueRouter)
 
@@ -9,7 +12,7 @@ const routes = [
   // USER PAGE
   {
     path: '/',
-    component: Site,
+    component: User,
     children: [
       {
         path: "/",
@@ -18,10 +21,16 @@ const routes = [
       },
     ]
   },
+  {
+    path: '*',
+    name: "Error",
+    component: ErrorPage,
+  },
   // ADMIN PAGE
   {
     path: '/admin',
     component: Admin,
+    // redirect: "/admin/login",
     children: [
       {
         path: "/",
@@ -30,34 +39,39 @@ const routes = [
         meta: { isLogin: true },
       },
       {
-        path: "/admin/inquiryList",
+        path: "inquiryList",
         name: "InquiryList",
         component: () => import('../components/InquiryList.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: "/admin/inquiryList/:id",
+        path: "inquiryList/:id",
         name: "InquiryDetail",
         component: () => import('../components/InquiryDetail.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: "/admin/userList",
+        path: "userList",
         name: "UserList",
         component: () => import('../components/UserList.vue'),
         meta: { requiresAuth: true, roleSuper: "SUPER" },
       },
       {
-        path: "/admin/userCreate",
+        path: "userCreate",
         name: "UserCreate",
         component: () => import('../components/UserCreate.vue'),
         meta: { requiresAuth: true, roleSuper: "SUPER" },
       },
       {
-        path: "/admin/myAccount",
+        path: "myAccount",
         name: "MyAccount",
         component: () => import('../components/MyAccount.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: '*',
+        name: 'Error',
+        component: ErrorPage
       },
     ]
   }
@@ -77,7 +91,7 @@ router.beforeEach((to, from, next) => {
 
   if(to.matched.some(record=>record.meta.requiresAuth)) {
     if(!isUser) {
-      alert('회원만 접근할수있습니다.');
+      alert('관리자만 접근할수있습니다.');
       next('/admin')
       return
     }
@@ -95,7 +109,7 @@ router.beforeEach((to, from, next) => {
     if(isSuper!=='"SUPER"') {
       // console.log(roleSuper)
       // console.log(isSuper)
-      alert('슈퍼회원만 접근할수있습니다.');
+      alert('최고관리자만 접근할수있습니다.');
       next('/admin/inquiryList')
       return
     }

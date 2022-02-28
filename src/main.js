@@ -63,21 +63,35 @@ new Vue({
     //   const userData2 = JSON.parse(userString2);
     //   this.$store.dispatch('setLogin', userData, userData2);
     // }
-    const userString2 = localStorage.getItem('token');
-    if (userString2) {
-      const userData2 = JSON.parse(userString2);
-      this.$store.dispatch('setToken', userData2);
+    
+    // console.log('headers', axios.defaults.headers.common['Authorization'])
+    // if(!axios.defaults.headers.common['Authorization'] && isToken) {
+    //   console.log('없다');
+    //   this.$store.dispatch('logout')
+    // }
+    
+    const isHeaders = axios.defaults.headers.common['Authorization'];
+    const isToken = localStorage.getItem('token');
+    // console.log('isHeaders', isHeaders)
+    // console.log('isToken', isToken)
+    if (isToken) {
+      const tokenData = JSON.parse(isToken);
+      this.$store.dispatch('setToken', tokenData);
       this.$store.dispatch('logoutTimer')
+      
+      console.log('isHeaders', isHeaders)
+      console.log('tokenData', tokenData)
     }
-    const userString3 = localStorage.getItem('serviceId');
-    if (userString3) {
-      const userData3 = JSON.parse(userString3);
-      this.$store.dispatch('setServiceId', userData3);
+
+    const isServiceId = localStorage.getItem('serviceId');
+    if (isServiceId) {
+      const serviceIdData = JSON.parse(isServiceId);
+      this.$store.dispatch('setServiceId', serviceIdData);
     }
-    const userString4 = localStorage.getItem('role');
-    if (userString4) {
-      const userData4 = JSON.parse(userString4);
-      this.$store.dispatch('setRole', userData4);
+    const isRole = localStorage.getItem('role');
+    if (isRole) {
+      const roleData = JSON.parse(isRole);
+      this.$store.dispatch('setRole', roleData);
     }
   },
   render: h => h(App)

@@ -1,7 +1,7 @@
 <template>
   <div id="admin-page">
-    <Header :admin="true" />
-    <router-view/>
+    <Header />
+    <router-view />
   </div>
 </template>
 

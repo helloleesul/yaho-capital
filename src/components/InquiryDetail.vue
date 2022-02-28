@@ -1,6 +1,9 @@
 <template>
     <main>
-        <b-container>
+        <b-container v-if="errorPage">
+            <ErrorPage />
+        </b-container>
+        <b-container v-else>
             <b-row class="yellow-wrap title mb-5">
                 <p class="text-30 fw-900 m-0">상담신청 상세</p>
             </b-row>
@@ -172,14 +175,15 @@
                 </b-col>
             </b-row>
         </b-container>
-        <Alert :okVariant="okVariant" :title="title" :body="body" @okClick="okClick()" />
+        <Alert :okVariant="okVariant" :title="title" :body="body" />
     </main>
 </template>
 
 <script>
 import Alert from './Alert.vue';
+import ErrorPage from './ErrorPage.vue';
 export default {
-    components: { Alert },
+    components: { Alert, ErrorPage },
     data() {
       return {
         statusOptions: [
@@ -198,6 +202,8 @@ export default {
         okVariant: null,
         title: null,
         body: null,
+
+        errorPage: false
       }
     },
     computed: {
@@ -206,7 +212,7 @@ export default {
         },
         commentSet() {
             return  this.item.comments.forEach(function(el) {
-                    console.log('commentSet', el);
+                    // console.log('commentSet', el);
                     this.$set(el, 'edit', false);
                     this.$set(el, 'disable', false);
             }, this)
@@ -218,15 +224,18 @@ export default {
     methods: {
         // 리스트 불러오기
         async getInquiryDetail(){
-            const { data } = await this.$axios.get("/admin/inquiry/"+this.id);
-            console.log(data);
-
-            this.item = data.data;
-            this.itemPhone = data.data.phone;
-
-            if (this.item.comments !== null) {
-                this.commentSet;
-            }
+            await this.$axios.get("/admin/inquiry/"+this.id)
+            .then((res) => {
+                console.log(res);
+                this.item = res.data.data;
+                this.itemPhone = res.data.data.phone;
+    
+                if (this.item.comments !== null) {
+                    this.commentSet;
+                }
+            }).catch(() => {
+                this.errorPage = true
+            });
         },
         // 처리상태 변경
         async updateStatus(){
@@ -236,6 +245,7 @@ export default {
             this.getInquiryDetail();
         },
 
+        // 수정 입력체크
         updateCommentCheck(text, list){
             const blank_pattern = /^\s+|\s+$/g;
             if(text == "" || text == undefined) {
@@ -248,27 +258,14 @@ export default {
                 list.content = null
                 this.$refs.commentInput2[0].focus()
                 this.alertModal('내용 입력','내용을 입력해주세요.','danger')
-                // this.okClick(alert('dd'));
-                // this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                //     title: '내용 입력',
-                //     size: 'sm',
-                //     buttonSize: 'sm',
-                //     okVariant: 'danger',
-                //     centered: true,
-                //     okTitle: '확인',
-                //     footerClass: 'p-2',
-                //     noCloseOnBackdrop: true,
-                //     footerBgVariant:"white",
-                //     titleClass: "fw-900"
-                // }).then(() => {
-                //     list.content = null
-                // })
             } else {
                 // console.log(text)
                 // console.log('입력되었습니다.')
                 this.updateComment(list);
             }
         },
+
+        // 수정 처리
         async updateComment(list){
             const { data } = await this.$axios.put("/admin/comments/"+list.id, {
                 content: list.content
@@ -276,83 +273,39 @@ export default {
             console.log(data)
             
             if (data.code === "0000") {
-                this.$bvModal.msgBoxOk('기록이 수정되었습니다.', {
-                    title: '기록 수정',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'success',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                }).then(() => {
-                   this.getInquiryDetail()
-                })
+                this.getInquiryDetail()
+                this.alertModal('기록 수정','기록이 수정되었습니다.','success')
             } else if (data.code === "4001") {
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                }).then(() => {
-                    // this.getInquiryDetail()
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
             } else if (data.code === "4040") {
-                this.$bvModal.msgBoxOk('요청하신 정보를 찾을 수 없습니다.', {
-                    title: '기록 ID 불일치',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                })
+                this.alertModal('요청 오류','요청하신 정보를 찾을 수 없습니다.','danger')
             }
             // console.log(list.id)
             // console.log(list)
             // console.log(list.content)
         },
+
+        // 작성 입력체크
         addCommentCheck(text) {
             const blank_pattern = /^\s+|\s+$/g;
             if(text == "" || text == undefined) {
-                console.log(text)
-                console.log('입력하세요.')
+                // console.log(text)
+                // console.log('입력하세요.')
                 this.$refs.commentInput.focus()
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
             } else if( text.replace( blank_pattern, '' ) == "" ) {
-                console.log('공백입니다.')
+                // console.log('공백입니다.')
+                this.newCommentContent = null
                 this.$refs.commentInput.focus()
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                }).then(() => {
-                    this.newCommentContent = null;
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
             } else {
-                console.log(text)
-                console.log('입력되었습니다.')
+                // console.log(text)
+                // console.log('입력되었습니다.')
                 this.addComment();
             }
         },
+
+        // 작성 처리
         async addComment(){
             const { data } = await this.$axios.post("/admin/comments/"+this.id, {
                 content: this.newCommentContent
@@ -360,42 +313,15 @@ export default {
             console.log(data)
 
             if (data.code === "0000") {
-                this.$bvModal.msgBoxOk('새 기록이 작성되었습니다.', {
-                    title: '기록 작성',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'success',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                }).then(() => {
-                    this.newCommentShow = false;
-                    this.newCommentContent = null;
-                    this.getInquiryDetail();
-                })
+                this.newCommentShow = false;
+                this.newCommentContent = null;
+                this.getInquiryDetail();
+                this.alertModal('기록 작성','새 기록이 작성되었습니다.','success')
             } else if (data.code === "4001") {
                 this.$refs.commentInput.focus()
-                this.$bvModal.msgBoxOk('내용을 입력해주세요.', {
-                    title: '내용 입력',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                })
+                this.alertModal('내용 입력','내용을 입력해주세요.','danger')
             } else if (data.code === "4040") {
-                this.$bvModal.msgBoxOk('요청하신 정보를 찾을 수 없습니다.', {
-                    title: '기록 ID 불일치',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    okVariant: 'danger',
-                    centered: true,
-                    okTitle: '확인',
-                    footerClass: 'p-2',
-                    noCloseOnBackdrop: true
-                })
+               this.alertModal('요청 오류','요청하신 정보를 찾을 수 없습니다.','danger')
             } 
             // console.log(this.item.comments.content)
         },
@@ -412,7 +338,9 @@ export default {
             cancelTitle: '취소',
             footerClass: 'p-2',
             centered: true,
-            noCloseOnBackdrop: true
+            noCloseOnBackdrop: true,
+            titleClass: 'fw-900',
+            footerBgVariant: 'white'
             }).then((value)=> {
                 // console.log(list, value)
                 if(value) {
@@ -454,9 +382,6 @@ export default {
             this.okVariant = okVariant
             this.$bvModal.show('alertModal')
         }, 
-        // okClick(val) {
-        //     val
-        // }
     },
     watch: {
         'item.status'(newVal, oldval) {
@@ -473,7 +398,7 @@ export default {
                     h('p', { class: ['mb-0'] }, [
                         // h('strong', { class: ['fw-900'] }, oldval),
                         // '에서 ',
-                        h('strong', { class: ['fw-900 text-danger'] }, newVal),
+                        h('strong', { class: ['fw-900 yellow-underline'] }, newVal),
                         ' 변경되었습니다. ',
                     ]),
                 ])
@@ -486,6 +411,9 @@ export default {
                     okTitle: '확인',
                     okVariant: 'success',
                     footerClass: 'p-2',
+                    noCloseOnBackdrop: true,
+                    titleClass: 'fw-900',
+                    footerBgVariant: 'white'
                 }).then(() => {
                     this.updateStatus();
                 })

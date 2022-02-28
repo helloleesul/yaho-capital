@@ -41,7 +41,7 @@ export default new Vuex.Store({
 
     logoutTimer() {
       const hour = 1; 
-      const minTime = 60; 
+      const minTime = 1; 
       const minute = 60 * 1000;
       const timer = hour * minTime * minute; 
       setTimeout(function(){
@@ -53,12 +53,14 @@ export default new Vuex.Store({
         location.replace('/admin')
       }, timer);
     },
+
     logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('serviceId');
-      localStorage.removeItem('role');
-      axios.defaults.headers.common['Authorization'] = undefined;
-      location.replace('/admin')
+        localStorage.removeItem('token');
+        localStorage.removeItem('serviceId');
+        localStorage.removeItem('role');
+        axios.defaults.headers.common['Authorization'] = undefined;
+        location.replace('/admin')
+        // console.log(axios.defaults.headers.common['Authorization']);
     }
   },
   actions: {
