@@ -50,9 +50,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    // setLogin:({commit} , _token, _serviceId) => {
-    //   commit('setLogin' , _token, _serviceId);
-    // },
     setToken:({commit} , _token) => {
       commit('setToken' , _token);
     },
@@ -72,8 +69,6 @@ export default new Vuex.Store({
   modules: {
   },
   // plugins: [
-  //   createPersistedState({
-  //     // storage: window.sessionStorage,
-  //   })
+  //   createPersistedState()
   // ]
 })
