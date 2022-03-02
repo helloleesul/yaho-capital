@@ -38,22 +38,6 @@ export default new Vuex.Store({
       state.role = _role;
       localStorage.setItem('role', JSON.stringify(_role))
     },
-
-    logoutTimer() {
-      const hour = 1; 
-      const minTime = 1; 
-      const minute = 60 * 1000;
-      const timer = hour * minTime * minute; 
-      setTimeout(function(){
-        alert(hour + '시간이 경과하여 로그아웃합니다.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('serviceId');
-        localStorage.removeItem('role');
-        axios.defaults.headers.common['Authorization'] = undefined;
-        location.replace('/admin')
-      }, timer);
-    },
-
     logout() {
         localStorage.removeItem('token');
         localStorage.removeItem('serviceId');
@@ -75,10 +59,6 @@ export default new Vuex.Store({
     },
     setRole:({commit} , _role) => {
       commit('setRole' , _role);
-    },
-
-    logoutTimer:({commit}) => {
-      commit('logoutTimer');
     },
     logout:({commit}) => {
       commit('logout');

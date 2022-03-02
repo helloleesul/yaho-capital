@@ -75,7 +75,7 @@ export default {
                     this.$store.dispatch('setToken', data.data.token)
                     this.$store.dispatch('setServiceId', data.data.serviceId)
                     this.$store.dispatch('setRole', data.data.role)
-                    this.$store.dispatch('logoutTimer')
+                    // this.$store.dispatch('logoutTimer')
                     if (!data.data.second) {
                         location.replace('/admin/myAccount')
                     } else {

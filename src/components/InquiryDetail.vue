@@ -36,9 +36,11 @@
                             </b-list-group-item>
                             <b-list-group-item>
                                 <span class="text-muted">상담내용</span>
-                                <b-card-text>
+                                <b-card-text :style="{height:'19rem'}">
                                     <span v-if="!item.content" :style="{opacity:'.2'}">상담내용이 없습니다.</span>
-                                    <span v-else :style="{whiteSpace: 'pre-wrap'}">{{item.content}}</span>
+                                    <span v-else :style="{whiteSpace: 'pre-wrap'}">
+                                        <vue-scroll>{{item.content}}</vue-scroll>
+                                    </span>
                                 </b-card-text>
                             </b-list-group-item>
                         </b-list-group>
@@ -116,9 +118,10 @@
 
                     <!-- 기록 -->
                     <section v-else class="commentsWrap">
+                        <vue-scroll>
                         <b-card
                         no-body
-                        class="mb-3"
+                        class="mb-3 me-3"
                         :class="{'active': list.edit}"
                         v-for="(list, index) in item.comments"
                         :key="list.id"
@@ -171,6 +174,7 @@
                                 </b-row>
                             </b-card-footer>
                         </b-card>
+                        </vue-scroll>
                     </section>
                 </b-col>
             </b-row>
@@ -425,15 +429,18 @@ export default {
 
 <style lang="scss" scoped>
     .commentsWrap {
-        border-top: 1px solid rgba(0,0,0,.125);
-        border-bottom: 1px solid rgba(0,0,0,.125);
-        padding-top: 1rem;
+        // border-top: 1px solid rgba(0,0,0,.125);
+        // border-bottom: 1px solid rgba(0,0,0,.125);
+        // padding-top: 1rem;
         height: 35rem;
         overflow-y: scroll;
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
         &::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
+        }
+        .card:last-child {
+            margin-bottom: 0 !important;
         }
     }
     .card-text {
