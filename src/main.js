@@ -73,6 +73,10 @@ axios.interceptors.response.use(
   },
   error => {
     // console.log(error)
+    if(error.message == 'Network Error') {
+      alert('서버와의 통신에 실패했습니다.')
+      store.dispatch('logout');
+    }
     if (error.response.status == '401') {
       // console.log(error.response.status)
       alert('접속 후 1시간이 경과되어 자동로그아웃합니다.')
@@ -86,14 +90,6 @@ new Vue({
   router,
   store,
   created() {
-    // const userString = localStorage.getItem('token');
-    // const userString2 = localStorage.getItem('serviceId');
-    // if (userString) {
-    //   const userData = JSON.parse(userString);
-    //   const userData2 = JSON.parse(userString2);
-    //   this.$store.dispatch('setLogin', userData, userData2);
-    // }
-    
     const isToken = localStorage.getItem('token');
     if (isToken) {
       const tokenData = JSON.parse(isToken);
@@ -108,6 +104,11 @@ new Vue({
     if (isRole) {
       const roleData = JSON.parse(isRole);
       this.$store.dispatch('setRole', roleData);
+    }
+    const isName = localStorage.getItem('name');
+    if (isName) {
+      const nameData = JSON.parse(isName);
+      this.$store.dispatch('setName', nameData);
     }
   },
   render: h => h(App)

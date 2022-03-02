@@ -12,11 +12,9 @@
   ok-only
   hide-header-close
   :ok-variant="okVariant"
+  :title="title"
   @ok="$emit('okClick')"
   >
-    <template #modal-title>
-      {{ title }}
-    </template>
     <template #default>
       {{ body }}
     </template>

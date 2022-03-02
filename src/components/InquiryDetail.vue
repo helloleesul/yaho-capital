@@ -187,6 +187,7 @@
 import Alert from './Alert.vue';
 import ErrorPage from './ErrorPage.vue';
 export default {
+    name: 'InquiryDetail',
     components: { Alert, ErrorPage },
     data() {
       return {
@@ -230,7 +231,7 @@ export default {
         async getInquiryDetail(){
             await this.$axios.get("/admin/inquiry/"+this.id)
             .then((res) => {
-                console.log(res);
+                console.log(res.data);
                 this.item = res.data.data;
                 this.itemPhone = res.data.data.phone;
     
@@ -317,10 +318,10 @@ export default {
             console.log(data)
 
             if (data.code === "0000") {
-                this.newCommentShow = false;
                 this.newCommentContent = null;
                 this.getInquiryDetail();
                 this.alertModal('기록 작성','새 기록이 작성되었습니다.','success')
+                // this.newCommentShow = false;
             } else if (data.code === "4001") {
                 this.$refs.commentInput.focus()
                 this.alertModal('내용 입력','내용을 입력해주세요.','danger')
@@ -385,7 +386,7 @@ export default {
             this.body = body
             this.okVariant = okVariant
             this.$bvModal.show('alertModal')
-        }, 
+        },
     },
     watch: {
         'item.status'(newVal, oldval) {

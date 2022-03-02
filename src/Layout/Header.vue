@@ -23,7 +23,8 @@
                                 <span class="mx-2">
                                     <font-awesome-icon icon="user" class="fa-xs" />
                                     <!-- ID:  -->
-                                    {{ $store.state.serviceId }}
+                                    {{ $store.state.name }}
+                                    ({{ $store.state.serviceId }})님
                                 </span>
                                 <b-btn @click="logout()" pill class="logout-btn decoration-0" variant="link">
                                     <span>

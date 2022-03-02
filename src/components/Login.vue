@@ -72,10 +72,11 @@ export default {
                     // console.log(this.input);
                     // console.log(this.$store.state.token);
                     // console.log(this.$store.state.serviceId);
+                    
                     this.$store.dispatch('setToken', data.data.token)
                     this.$store.dispatch('setServiceId', data.data.serviceId)
                     this.$store.dispatch('setRole', data.data.role)
-                    // this.$store.dispatch('logoutTimer')
+                    this.$store.dispatch('setName', data.data.name)
                     if (!data.data.second) {
                         location.replace('/admin/myAccount')
                     } else {

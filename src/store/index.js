@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+// import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     serviceId: null,
+    name: null,
     role: null,
     token: null,
   },
@@ -19,12 +21,6 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    // setLogin(state, _token, _serviceId){
-    //   state.token = _token;
-    //   state.serviceId = _serviceId;
-    //   localStorage.setItem('token', JSON.stringify(_token))
-    //   localStorage.setItem('serviceId', JSON.stringify(_serviceId))
-    // },
     setToken(state, _token){
       state.token = _token;
       localStorage.setItem('token', JSON.stringify(_token))
@@ -38,10 +34,16 @@ export default new Vuex.Store({
       state.role = _role;
       localStorage.setItem('role', JSON.stringify(_role))
     },
+    setName(state, _name) {
+      state.name = _name;
+      localStorage.setItem('name', JSON.stringify(_name))
+    },
     logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('serviceId');
-        localStorage.removeItem('role');
+        localStorage.clear();
+        // localStorage.removeItem('token');
+        // localStorage.removeItem('serviceId');
+        // localStorage.removeItem('role');
+        // localStorage.removeItem('name');
         axios.defaults.headers.common['Authorization'] = undefined;
         location.replace('/admin')
         // console.log(axios.defaults.headers.common['Authorization']);
@@ -60,10 +62,18 @@ export default new Vuex.Store({
     setRole:({commit} , _role) => {
       commit('setRole' , _role);
     },
+    setName:({commit} , _name) => {
+      commit('setName' , _name);
+    },
     logout:({commit}) => {
       commit('logout');
     },
   },
   modules: {
-  }
+  },
+  // plugins: [
+  //   createPersistedState({
+  //     // storage: window.sessionStorage,
+  //   })
+  // ]
 })

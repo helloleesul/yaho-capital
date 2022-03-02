@@ -87,7 +87,6 @@ router.beforeEach((to, from, next) => {
   const isUser = localStorage.getItem('token')
   const isSuper = localStorage.getItem('role')
   const roleSuper = to.meta.roleSuper
-  // console.log(to)
 
   if(to.matched.some(record=>record.meta.requiresAuth)) {
     if(!isUser) {
