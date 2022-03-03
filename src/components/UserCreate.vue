@@ -161,6 +161,7 @@ export default {
                     this.idCheck = false;
                 }
             } else if (data.code === "1002") {
+                this.input.serviceId = null
                 this.alertModal('아이디 중복','입력하신 아이디가 이미 존재합니다.','danger')
                 this.idCheck = false;
             }
