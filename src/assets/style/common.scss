@@ -1,9 +1,12 @@
-@import './font.scss';
-@import './table.scss';
+@import "./font.scss";
+@import "./table.scss";
 
-// html,body,#app,#admin-page {
-//   height: 100%;
-// }
+html,
+body,
+#app,
+#admin-page {
+  height: 100%;
+}
 
 body {
   -ms-overflow-style: none; /* IE and Edge */
@@ -18,31 +21,42 @@ input:-webkit-autofill {
   box-shadow: 0 0 0 1000px white inset;
   -webkit-box-shadow: 0 0 0 1000px white inset;
 }
-input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { transition: background-color 5000s ease-in-out 0s; }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+}
 
-.custom-control-label:before, .custom-file-label, .custom-select {
-  transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+.custom-control-label:before,
+.custom-file-label,
+.custom-select {
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 .custom-select {
   display: inline-block;
   width: 10rem;
-  height: calc(1.5em + .75rem + 2px);
-  font-size : 1rem;
+  height: calc(1.5em + 0.75rem + 2px);
+  font-size: 1rem;
   line-height: 1.5;
-  padding: .375rem 1.75rem .375rem .75rem;
-  background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center/8px 10px;
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+  background: #fff
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E")
+    no-repeat right 0.75rem center/8px 10px;
   vertical-align: middle;
   border: 1px solid #ced4da;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   -webkit-appearance: none;
   appearance: none;
 }
 
 .form-control {
-  border-radius: .25rem !important;
+  border-radius: 0.25rem !important;
 }
 
-.row, .col {
+.row,
+.col {
   margin: 0;
   padding: 0;
 }
@@ -52,6 +66,16 @@ main {
 }
 
 main {
+  &.center {
+    height: 100%;
+    position: relative;
+    .container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
   .container {
     color: #000;
     padding: 8rem 0;
@@ -69,15 +93,16 @@ main {
     .container {
       padding: 4rem 0;
     }
-  } 
+  }
 }
 
-.btn:focus, .page-item button:focus {
+.btn:focus,
+.page-item button:focus {
   outline: none !important;
   box-shadow: none;
 }
 .btn.disabled {
-  opacity: .3;
+  opacity: 0.3;
 }
 
 #header {
@@ -86,7 +111,7 @@ main {
   line-height: 1;
   min-width: 1536px;
   .row {
-      height: 5rem;
+    height: 5rem;
   }
   // h1 {
   //   font-family: 'SBAggroB', "NanumSquare", sans-serif;
@@ -105,17 +130,17 @@ footer {
   display: none;
 }
 
-button.page-link, 
+button.page-link,
 li.page-item.disabled {
-  font-family: 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif
+  font-family: "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .yaho {
-  font-family: 'SBAggroB' !important;
+  font-family: "SBAggroB" !important;
 }
 
 .yellow {
-  background: #FFEF6B;
+  background: #ffef6b;
 }
 
 .yellow-underline {
@@ -123,14 +148,14 @@ li.page-item.disabled {
   display: inline-block;
   z-index: 1;
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 10px;
     left: 0;
     width: 100%;
     height: 10px;
     z-index: -1;
-    background: #FFEB00;
+    background: #ffeb00;
   }
 }
 
@@ -143,8 +168,8 @@ li.page-item.disabled {
   position: relative;
   background: #fff;
   &::before {
-    content: '';
-    background: #FDDA00;
+    content: "";
+    background: #fdda00;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -165,8 +190,8 @@ li.page-item.disabled {
   position: relative;
   background: #fff;
   &::before {
-    content: '';
-    background: #FDDA00;
+    content: "";
+    background: #fdda00;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -184,4 +209,6 @@ li.page-item.disabled {
   font-weight: 900;
 }
 
-.sr-only{display:none !important}
+.sr-only {
+  display: none !important;
+}
