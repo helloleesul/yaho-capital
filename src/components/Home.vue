@@ -10,6 +10,15 @@
         </b-row>
       </b-container>
     </section>
+    <!-- 상담신청 -->
+    <section id="inquiry">
+      <b-container class="position-relative">
+        <b-row class="align-items-center yellow-wrap">
+          <p class="text-30 fw-900 mb-4">대출상담 신청하기</p>
+          <Inquiry />
+        </b-row>
+      </b-container>
+    </section>
     <!-- 멘트 -->
     <section class="border-bottom">
       <b-container>
@@ -95,15 +104,6 @@
               </li>
             </ol>
           </b-col>
-        </b-row>
-      </b-container>
-    </section>
-    <!-- 상담신청 -->
-    <section id="inquiry">
-      <b-container class="position-relative">
-        <b-row class="align-items-center yellow-wrap">
-          <p class="text-30 fw-900 mb-4">대출상담 신청하기</p>
-          <Inquiry />
         </b-row>
       </b-container>
     </section>
