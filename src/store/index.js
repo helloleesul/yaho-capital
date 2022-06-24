@@ -11,6 +11,20 @@ export default new Vuex.Store({
     name: null,
     role: null,
     token: null,
+    loanItems: [
+      { id: 1, name: "아파트담보대출", icon: "building" },
+      { id: 2, name: "공동명의지분대출",  icon: "hotel" },
+      { id: 3, name: "무설정아파트",  icon: "campground" },
+      { id: 4, name: "빌라/단독주택",  icon: "house-user" },
+      { id: 5, name: "전/월세 보증금",  icon: "warehouse" },
+      { id: 6, name: "기타부동산",  icon: "industry" },
+      { id: 7, name: "경매취하/압류/가압류", icon: "store-slash" },
+      { id: 8, name: "자동차담보",  icon: "car" },
+      { id: 9, name: "직장인대출",  icon: "briefcase" },
+      { id: 10, name: "사업자대출",  icon: "hand-holding-usd" },
+      { id: 11, name: "저금리대환",  icon: "coins" },
+      { id: 12, name: "저신용자희망대출", icon: "file-invoice-dollar"},
+    ],
   },
   getters: {
     isLogin(state){
@@ -47,7 +61,7 @@ export default new Vuex.Store({
         axios.defaults.headers.common['Authorization'] = undefined;
         location.replace('/admin')
         // console.log(axios.defaults.headers.common['Authorization']);
-    }
+    },
   },
   actions: {
     setToken:({commit} , _token) => {

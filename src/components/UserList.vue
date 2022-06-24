@@ -1,5 +1,5 @@
 <template>
-  <main class="center">
+  <main class="">
     <!-- <p>리스트: {{ userItems }}</p> -->
     <!-- <p>총 리스트 행 수: {{totalElements}}</p> -->
     <!-- <p>총 페이지 수: {{totalPages}}</p> -->

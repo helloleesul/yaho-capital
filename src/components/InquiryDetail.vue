@@ -1,5 +1,5 @@
 <template>
-  <main class="center">
+  <main class="">
     <b-container v-if="errorPage">
       <ErrorPage />
     </b-container>

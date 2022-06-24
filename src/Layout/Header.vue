@@ -1,21 +1,21 @@
 <template>
-  <header class="position-fixed w-100 yaho shadow" id="header">
+  <header class="position-fixed w-100 shadow" id="header">
     <b-container>
       <b-row class="align-items-center justify-content-between">
         <b-col class="col-3">
           <b-navbar-brand
             tag="h1"
             class="m-0 p-0 fw-900 text-30 font-italic cursor-pointer d-inline-block"
-            @click="$router.push('/'), scrollTop()"
+            @click="$router.push('/').catch(() => {}), scrollTop('#header')"
           >
             <img
               src="@/assets/yaho.svg"
               alt="야호 캐피탈"
-              :style="{ width: '13rem' }"
+              :style="{ width: '15rem' }"
             />
           </b-navbar-brand>
         </b-col>
-        <b-col class="col-8 text-20 text-right p-0">
+        <b-col class="col-8 text-20 text-right p-0 yaho">
           <b-row class="align-items-center justify-content-between">
             <!-- 관리자 헤더 -->
             <template v-if="path.includes('/admin')">
@@ -44,14 +44,14 @@
                   </b-nav>
                 </b-col>
                 <b-col>
-                  <span class="mx-2 text-15">
+                  <span class="mx-2 text-17">
                     {{ $store.state.name }}({{ $store.state.serviceId }}) 님
                   </span>
                   <b-btn
                     @click="logout()"
                     pill
-                    class="logout-btn decoration-0"
-                    variant="link"
+                    class="decoration-0"
+                    variant="dark"
                   >
                     <span> 로그아웃 </span>
                   </b-btn>
@@ -59,39 +59,36 @@
               </template>
               <!-- 로그아웃 상태 -->
               <template v-else>
-                <b-col
-                  ><span class="mx-2 text-15"> 관리자 전용 페이지 </span></b-col
-                >
+                <b-col> <span> 관리자 전용 페이지 </span></b-col>
               </template>
             </template>
             <!-- 기본 헤더 -->
             <template v-else>
               <b-col>
                 <b-nav class="justify-content-center">
-                  <b-nav-item
-                    to="/"
-                    :class="path.includes('/admin/inquiryList') ? 'active' : ''"
-                    >대출상품</b-nav-item
+                  <b-nav-item-dropdown
+                    text="대출상품"
+                    toggle-class="nav-link-custom"
                   >
-                  <b-nav-item
-                    to="/"
-                    :class="path.includes('/admin/user') ? 'active' : ''"
-                    >접수하기</b-nav-item
-                  >
-                  <b-nav-item
-                    to="/"
-                    :class="path.includes('/admin/myAccount') ? 'active' : ''"
-                    >고객센터</b-nav-item
-                  >
+                    <b-dropdown-item
+                      v-for="item in $store.state.loanItems"
+                      :key="item.id"
+                      :to="`/loanType/${item.id}`"
+                      @click="scrollTop('#header')"
+                      >{{ item.name }}</b-dropdown-item
+                    >
+                  </b-nav-item-dropdown>
+                  <b-nav-item @click="scrollTop('#inquiry')" to="/">
+                    상담신청
+                  </b-nav-item>
                 </b-nav>
               </b-col>
               <b-col>
-                <div
-                  class="logout-btn rounded-pill d-inline-flex py-2 px-3 align-items-center"
-                >
-                  <font-awesome-icon icon="phone-alt" />
-                  <a href="tel:1600-1481" class="fw-900 ms-2"> 1600-1481 </a>
-                </div>
+                <span class="yaho light mainColor"> 상담전화 </span>
+                <!-- <span class="mx-2">|</span> -->
+                <a href="tel:1600-1481" class="bold yaho mainColor">
+                  1600-1481
+                </a>
               </b-col>
             </template>
           </b-row>
@@ -106,7 +103,7 @@ export default {
   name: "Header",
   data() {
     return {
-      user: true,
+      // user: true,
     };
   },
   computed: {
@@ -118,8 +115,11 @@ export default {
     logout() {
       this.$store.dispatch("logout");
     },
-    scrollTop() {
-      window.scrollTo({ top: 0 });
+    scrollTop(el) {
+      const element = document.querySelector(el);
+      const elementTop = element.offsetTop - 200;
+      window.scrollTo(0, elementTop);
+      // console.log(elementTop);
     },
   },
 };
@@ -127,9 +127,10 @@ export default {
 
 <style lang="scss" scoped>
 .nav-item {
+  font-size: 22px;
   &.active {
     color: #000;
-    font-weight: 900;
+    // font-weight: 900;
     &::after {
       content: "";
       width: 80%;
@@ -148,14 +149,9 @@ export default {
     &:active {
       color: #000;
     }
-  }
-}
-.logout-btn {
-  background: #ffdf14;
-  border: 2px solid #000;
-  box-shadow: 2px 2px 0 0 #000;
-  span {
-    color: #000;
+    a:hover {
+      color: #000;
+    }
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="blank">
     <!-- 상단 메인 -->
     <section class="yellow">
       <b-container>
@@ -108,44 +108,45 @@
       </b-container>
     </section>
     <!-- 대출상품 -->
-    <section class="bg-white">
+    <section class="bg-white" id="loanItems">
       <b-container>
         <b-row class="text-center align-items-center justify-content-center">
-          <div>
-            <h3 class="mb-5 text-30">
-              <span class="yaho fw-900 font-italic">야호 캐피탈 </span>
-              <span class="mx-2">대출상품</span>
-            </h3>
-            <ul
-              class="d-flex justify-content-between align-items-center w-100 m-0 p-0"
-              :style="{ flexWrap: 'wrap', gap: '10px' }"
+          <h3 class="mb-5 text-30">
+            <span class="yaho fw-900 font-italic">야호 캐피탈 </span>
+            <span class="mx-2">대출상품</span>
+          </h3>
+          <b-row>
+            <b-col
+              cols="12"
+              md="6"
+              lg="3"
+              class="my-2"
+              v-for="item in $store.state.loanItems"
+              :key="item.id"
             >
-              <li
-                v-for="item in loanItems"
-                :key="item.index"
-                :style="{ width: '16%' }"
+              <b-btn
+                @click="
+                  $router.push(`/loanType/${item.id}`), scrollTop('#header')
+                "
+                class="w-100 position-relative border-0"
+                :style="{ height: '8rem', background: item.color }"
               >
-                <b-btn
-                  @click="modalShow(item)"
-                  class="w-100 position-relative border-0"
-                  :style="{ height: '8rem', background: item.color }"
-                >
-                  <span class="text-20 loanItem">
-                    {{ item.name }}
-                  </span>
-                  <font-awesome-icon
-                    class="loanItem-icon fa-3x"
-                    :icon="item.icon"
-                  />
-                </b-btn>
-              </li>
-            </ul>
-          </div>
+                <span class="text-20 loanItem">
+                  {{ item.name }}
+                </span>
+                <font-awesome-icon
+                  class="loanItem-icon fa-3x"
+                  :icon="item.icon"
+                />
+              </b-btn>
+            </b-col>
+          </b-row>
         </b-row>
       </b-container>
     </section>
 
-    <Modal :loanItem="loanItem" />
+    <!-- <Modal :loanItem="loanItem" /> -->
+    <Modal />
     <GoButton />
   </main>
 </template>
@@ -160,25 +161,7 @@ export default {
   components: { GoButton, Inquiry, Modal },
   data() {
     return {
-      loanItem: null,
-      loanItems: [
-        { name: "아파트담보대출", color: "#35A67D", icon: "building" },
-        { name: "공동명의지분대출", color: "#35A67D", icon: "hotel" },
-        { name: "무설정아파트", color: "#35A67D", icon: "campground" },
-        { name: "빌라/단독주택", color: "#35A67D", icon: "house-user" },
-        { name: "전/월세 보증금", color: "#35A67D", icon: "warehouse" },
-        { name: "기타부동산", color: "#35A67D", icon: "industry" },
-        { name: "경매취하/압류/가압류", color: "#35A67D", icon: "store-slash" },
-        { name: "자동차담보", color: "#35A67D", icon: "car" },
-        { name: "직장인대출", color: "#526BAA", icon: "briefcase" },
-        { name: "사업자대출", color: "#526BAA", icon: "hand-holding-usd" },
-        { name: "저금리대환", color: "#526BAA", icon: "coins" },
-        {
-          name: "저신용자희망대출",
-          color: "#526BAA",
-          icon: "file-invoice-dollar",
-        },
-      ],
+      // loanItem: null,
       steps: [
         {
           title: "대출상담 신청하기",
@@ -214,9 +197,14 @@ export default {
     };
   },
   methods: {
-    modalShow(item) {
-      this.loanItem = item;
-      this.$bvModal.show("loanItem");
+    // modalShow(item) {
+    //   this.loanItem = item;
+    //   this.$bvModal.show("loanItem");
+    // },
+    scrollTop(el) {
+      const element = document.querySelector(el);
+      const elementTop = element.offsetTop;
+      window.scrollTo(0, elementTop);
     },
   },
 };

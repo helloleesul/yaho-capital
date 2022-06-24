@@ -19,6 +19,11 @@ const routes = [
         name: "Home",
         component: () => import('../components/Home.vue'),
       },
+      {
+        path: "loanType/:id",
+        name: "LoanType",
+        component: () => import('../components/LoanType.vue'),
+      },
     ]
   },
   {
