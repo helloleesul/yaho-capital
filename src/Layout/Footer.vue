@@ -1,5 +1,6 @@
 <template>
   <footer class="yaho light">
+    <!-- 관리자화면 -->
     <template v-if="path.includes('/admin')">
       <b-container>
         <p class="m-0 text-center">
@@ -7,6 +8,7 @@
         </p>
       </b-container>
     </template>
+    <!-- 유저화면 -->
     <template v-else>
       <b-container>
         <b-row class="align-items-center mb-3">
